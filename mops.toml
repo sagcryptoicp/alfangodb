@@ -1,0 +1,5 @@
+[dependencies]
+base = "0.9.8"
+rand = "https://github.com/aviate-labs/rand.mo#v0.2.3"
+ulid = "https://github.com/aviate-labs/ulid.mo#v0.1.3"
+map = "https://github.com/ZhenyaUsenko/motoko-hash-map#v9.0.1"
