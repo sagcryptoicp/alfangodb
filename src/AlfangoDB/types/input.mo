@@ -1,5 +1,6 @@
 import Database "database";
 import Datatypes "datatype";
+import SearchTypes "search";
 
 module {
 
@@ -17,13 +18,19 @@ module {
     public type CreateItemInputType = {
         databaseName : Text;
         tableName : Text;
-        attributesDataValues: [ (Text, Datatypes.AttributeDataValue) ];
+        attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
     };
 
     public type GetItemByIdInputType = {
         databaseName: Text;
         tableName: Text;
         id: Text;
+    };
+
+    public type ScanInputType = {
+        databaseName: Text;
+        tableName: Text;
+        filters: [ SearchTypes.FilterExpressionType ];
     };
 
 };

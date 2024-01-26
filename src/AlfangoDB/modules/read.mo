@@ -1,16 +1,21 @@
-import InputTypes "../types/input";
 import Datatypes "../types/datatype";
 import Database "../types/database";
+import InputTypes "../types/input";
+import OutputTypes "../types/output";
 import Map "mo:map/Map";
 import { thash } "mo:map/Map";
 import Debug "mo:base/Debug";
+import Prelude "mo:base/Prelude";
+import Text "mo:base/Text";
+import Array "mo:base/Array";
+import Buffer "mo:base/Buffer";
 
 module {
 
     public func getItemById({
         getItemByIdInput: InputTypes.GetItemByIdInputType;
         alfangoDB: Database.AlfangoDB;
-    }) : ?[ (Text, Datatypes.AttributeDataValue) ] {
+    }) : OutputTypes.GetItemByIdOutputType {
 
         // get databases
         let databases = alfangoDB.databases;

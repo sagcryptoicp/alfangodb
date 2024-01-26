@@ -1,10 +1,13 @@
 import Datatypes "types/datatype";
 import Database "types/database";
 import InputTypes "types/input";
+import OutputTypes "types/output";
+import SearchTypes "types/search";
 import Create "modules/create";
 import Read "modules/read";
 import Update "modules/update";
 import Delete "modules/delete";
+import Search "modules/search";
 
 module {
 
@@ -48,13 +51,35 @@ module {
     public type CreateDatabaseInputType = InputTypes.CreateDatabaseInputType;
     public type CreateTableInputType = InputTypes.CreateTableInputType;
     public type CreateItemInputType = InputTypes.CreateItemInputType;
-    public type GetItemByIdInputType = InputTypes.GetItemByIdInputType;
+    public type CreateItemOutputType = OutputTypes.CreateItemOutputType;
+
+    public let { createDatabase; createTable; createItem; } = Create;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public let { createDatabase; createTable; createItem; } = Create;
+    public type GetItemByIdInputType = InputTypes.GetItemByIdInputType;
+    public type GetItemByIdOutputType = OutputTypes.GetItemByIdOutputType;
+
     public let { getItemById; } = Read;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public type RelationalExpressionAttributeDataValue = SearchTypes.RelationalExpressionAttributeDataValue;
+    public type FilterExpressionConditionType = SearchTypes.FilterExpressionConditionType;
+
+    public type ScanInputType = InputTypes.ScanInputType;
+    public type ScanOutputType = OutputTypes.ScanOutputType;
+
+    public let { scan; } = Search;
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public let {} = Update;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public let {} = Delete;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 };

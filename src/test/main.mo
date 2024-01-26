@@ -16,11 +16,16 @@ shared ({ caller = initializer }) actor class Test() = this {
         AlfangoDB.createTable({ createTableInput = args; alfangoDB; });
     };
 
-    public shared (msg) func createItem(args : AlfangoDB.CreateItemInputType) : async Result.Result<Text, [ Text ]> {
+    public shared (msg) func createItem(args : AlfangoDB.CreateItemInputType) : async AlfangoDB.CreateItemOutputType {
         await AlfangoDB.createItem({ createItemInput = args; alfangoDB; });
     };
 
-    public shared (msg) func getItemById(args : AlfangoDB.GetItemByIdInputType) : async ?[ (Text, AlfangoDB.AttributeDataValue) ] {
+    public query (msg) func getItemById(args : AlfangoDB.GetItemByIdInputType) : async AlfangoDB.GetItemByIdOutputType {
         AlfangoDB.getItemById({ getItemByIdInput = args; alfangoDB; });
     };
+
+    public query (msg) func scan(args : AlfangoDB.ScanInputType) : async AlfangoDB.ScanOutputType {
+        AlfangoDB.scan({ scanInput = args; alfangoDB; });
+    };
+
 };

@@ -1,6 +1,7 @@
 import Database "../types/database";
 import Datatypes "../types/datatype";
 import InputTypes "../types/input";
+import OutputTypes "../types/output";
 import Utils "../utils";
 import Map "mo:map/Map";
 import Set "mo:map/Set";
@@ -105,7 +106,7 @@ module {
     public func createItem({
         createItemInput: InputTypes.CreateItemInputType;
         alfangoDB: Database.AlfangoDB;
-    }) : async Result.Result<Text, [ Text ]> {
+    }) : async OutputTypes.CreateItemOutputType {
 
         // get databases
         let databases = alfangoDB.databases;
@@ -130,14 +131,14 @@ module {
             // get table
             let table = Map.get(database.tables, thash, createItemInput.tableName)!;
 
-            let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(createItemInput.attributesDataValues.vals(), 0, Text.equal, Text.hash);
+            let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(createItemInput.attributeDataValues.vals(), 0, Text.equal, Text.hash);
             //////////////////////////////// START VALIDATION ////////////////////////////////
 
             // 1. validate item data-type
             let {
                 validItemDataType;
             } = validateItemDataType({
-                attributesDataValues = createItemInput.attributesDataValues;
+                attributeDataValues = createItemInput.attributeDataValues;
                 tableMetadata = table.metadata;
             });
             if (not validItemDataType) {
@@ -149,7 +150,7 @@ module {
                 actualRequiredAttributes;
                 requiredAttributesPresent;
             } = validateRequiredAttributes({
-                attributesDataValues = createItemInput.attributesDataValues;
+                attributeDataValues = createItemInput.attributeDataValues;
                 tableMetadata = table.metadata;
             });
             if (not requiredAttributesPresent) {
@@ -161,7 +162,7 @@ module {
                 invalidUnquieAttributes;
                 uniqueAttributesUnique;
             } = validateUniqueAttributes({
-                attributesDataValues = createItemInput.attributesDataValues;
+                attributeDataValues = createItemInput.attributeDataValues;
                 indexes = table.indexes;
                 tableMetadata = table.metadata;
             });
@@ -211,7 +212,7 @@ module {
             // create item
             let item : Database.Item = {
                 id = newItemId;
-                attributeDataValueMap = Map.fromIter<Text, Datatypes.AttributeDataValue>(Iter.fromArray(createItemInput.attributesDataValues), thash);
+                attributeDataValueMap = Map.fromIter<Text, Datatypes.AttributeDataValue>(Iter.fromArray(createItemInput.attributeDataValues), thash);
                 previousAttributeDataValueMap = Map.new<Text, Datatypes.AttributeDataValue>();
                 createdAt = Time.now();
                 var updatedAt = Time.now();
@@ -230,7 +231,7 @@ module {
 
 
     private func validateItemDataType({
-        attributesDataValues : [ (Text, Datatypes.AttributeDataValue) ];
+        attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
         tableMetadata: Database.TableMetadata;
     }) : {
         invalidDataTypeAttributeNameToExpectedDataType : HashMap.HashMap<Text, Datatypes.AttributeDataType>;
@@ -244,7 +245,7 @@ module {
             tableMetadata.attributes.size(), Text.equal, Text.hash
         );
 
-        for ((attributeName, attributeDataValue) in attributesDataValues.vals()) {
+        for ((attributeName, attributeDataValue) in attributeDataValues.vals()) {
             var actualAttributeDataType : Datatypes.AttributeDataType = #default;
             switch (attributeDataValue) {
                 case (#text(textValue)) {
@@ -336,7 +337,7 @@ module {
     };
 
     private func validateRequiredAttributes({
-        attributesDataValues : [ (Text, Datatypes.AttributeDataValue) ];
+        attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
         tableMetadata: Database.TableMetadata;
     }) : {
         actualRequiredAttributes : [ Text ];
@@ -345,7 +346,7 @@ module {
         let expectedRequiredAttributes = Array.filter<Database.AttributeMetadata>(tableMetadata.attributes, func attributeMetadata = attributeMetadata.required);
         let actualRequiredAttributes = Buffer.Buffer<Text>(0);
 
-        for ((attributeName, _) in attributesDataValues.vals()) {
+        for ((attributeName, _) in attributeDataValues.vals()) {
             if (Option.isSome(Array.find<Database.AttributeMetadata>(expectedRequiredAttributes, func attributeMetadata = attributeMetadata.name == attributeName))) {
                 actualRequiredAttributes.add(attributeName);
             };
@@ -358,15 +359,15 @@ module {
     };
 
     private func validateUniqueAttributes({
-        attributesDataValues : [ (Text, Datatypes.AttributeDataValue) ];
-        indexes : Map.Map<Text, Database.Index>;
+        attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
+        indexes: Map.Map<Text, Database.Index>;
         tableMetadata: Database.TableMetadata;
     }) : {
         invalidUnquieAttributes : [ Text ];
         uniqueAttributesUnique : Bool;
     } {
         let attributesMetadata = tableMetadata.attributes;
-        let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(attributesDataValues.vals(), 0, Text.equal, Text.hash);
+        let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(attributeDataValues.vals(), 0, Text.equal, Text.hash);
         let invalidUnquieAttributes = Buffer.Buffer<Text>(0);
 
         label l0 for (attributeMetadata in attributesMetadata.vals()) {
