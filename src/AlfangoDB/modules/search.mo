@@ -31,11 +31,7 @@ module {
         // get databases
         let databases = alfangoDB.databases;
 
-        let {
-            databaseName;
-            tableName;
-            filters;
-        } = scanInput;
+        let { databaseName; tableName; filterExpressions; } = scanInput;
 
         // check if database exists
         if (not Map.has(databases, thash, databaseName)) {
@@ -46,7 +42,7 @@ module {
         ignore do ?{
             let database = Map.get(databases, thash, databaseName)!;
 
-            //check if table exists
+            // check if table exists
             if (not Map.has(database.tables, thash, tableName)) {
                 Debug.print("table does not exist");
                 return null;
@@ -56,7 +52,7 @@ module {
 
             let tableItems = table.items;
             let filteredItemMap = Map.filter(tableItems, thash, func(itemId : Database.Id, item: Database.Item) : Bool {
-                applyFilterExpression({ item; filters });
+                applyFilterExpression({ item; filterExpressions; });
             });
 
             let filterItemBuffer = Buffer.Buffer<[(Text, Datatypes.AttributeDataValue)]>(filteredItemMap.size());
@@ -73,39 +69,44 @@ module {
 
     private func applyFilterExpression({
         item: Database.Item;
-        filters: [ FilterExpressionType ];
+        filterExpressions: [ FilterExpressionType ];
     }) : Bool {
 
         let attributeDataValueMap = item.attributeDataValueMap; 
-        var filterResult = true;
+        var filterExpressionResult = true;
 
         // iterate over filter expressions and apply them
-        for (filter in filters.vals()) {
-            let {
-                attributeName;
-                condition;
-            } = filter;
+        for (filterExpression in filterExpressions.vals()) {
+            let { attributeName; filterExpressionCondition; } = filterExpression;
 
+            var currentFilterExpressionResult = false;
             // check if attribute exists
-            if(Map.has(attributeDataValueMap, thash, attributeName)) {
+            if (Map.has(attributeDataValueMap, thash, attributeName)) {
                 ignore do? {
-                    filterResult := filterResult and applyFilterExpressionCondition({
-                        condition;
+                    // apply filter expression condition when attribute exists
+                    currentFilterExpressionResult := applyFilterExpressionCondition({
+                        filterExpressionCondition;
                         attributeDataValue = Map.get(attributeDataValueMap, thash, attributeName)!;
                     });
                 }
+            }
+            // if attribute does not exist, apply #NOT_EXISTS condition
+            else if (filterExpressionCondition == #NOT_EXISTS) {
+                currentFilterExpressionResult := true;
             };
+
+            filterExpressionResult := filterExpressionResult and currentFilterExpressionResult;
         };
 
-        return filterResult;
+        return filterExpressionResult;
     };
 
     private func applyFilterExpressionCondition({
-        condition: FilterExpressionConditionType;
+        filterExpressionCondition: FilterExpressionConditionType;
         attributeDataValue: AttributeDataValue;
     }) : Bool {
 
-        switch (condition) {
+        switch (filterExpressionCondition) {
             case (#EQ(conditionAttributeDataValue)) {
                 return applyFilterEQ({ attributeDataValue; conditionAttributeDataValue; });
             };

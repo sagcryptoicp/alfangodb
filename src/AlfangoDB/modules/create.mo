@@ -195,7 +195,6 @@ module {
             // add unique attribute indexes
             for (attributeMetadata in table.metadata.attributes.vals()) {
                 if (attributeMetadata.unique) {
-                    Debug.print("adding unique attribute index");
                     ignore do ?{
                         let attributeName = attributeMetadata.name;
                         let attributeValue = attributeDataValueMap.get(attributeName)!;

@@ -30,7 +30,7 @@ module {
     public type ScanInputType = {
         databaseName: Text;
         tableName: Text;
-        filters: [ SearchTypes.FilterExpressionType ];
+        filterExpressions: [ SearchTypes.FilterExpressionType ];
     };
 
 };

@@ -31,7 +31,7 @@ module {
 
     public type FilterExpressionType = {
         attributeName: Text;
-        condition: FilterExpressionConditionType;
+        filterExpressionCondition: FilterExpressionConditionType;
     };
-    
+
 };
