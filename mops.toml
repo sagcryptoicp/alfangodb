@@ -1,3 +1,10 @@
+[package]
+name = "alfangodb"
+version = "1.0"
+description = "Database for the Internet Computer"
+repository = "https://github.com/sagcryptoicp/alfangodb"
+license = "MIT"
+
 [dependencies]
 base = "0.9.8"
 rand = "https://github.com/aviate-labs/rand.mo#v0.2.3"
