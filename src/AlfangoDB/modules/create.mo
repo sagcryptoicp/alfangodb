@@ -2,6 +2,7 @@ import Database "../types/database";
 import Datatypes "../types/datatype";
 import InputTypes "../types/input";
 import OutputTypes "../types/output";
+import Commons "commons";
 import Utils "../utils";
 import Map "mo:map/Map";
 import Set "mo:map/Set";
@@ -133,13 +134,17 @@ module {
 
             let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(createItemInput.attributeDataValues.vals(), 0, Text.equal, Text.hash);
             //////////////////////////////// START VALIDATION ////////////////////////////////
+            let attributeNameToMetadataMap = HashMap.fromIter<Text, Database.AttributeMetadata>(
+                Array.map<Database.AttributeMetadata, (Text, Database.AttributeMetadata)>(table.metadata.attributes, func attributeMetadata = (attributeMetadata.name, attributeMetadata)).vals(),
+                table.metadata.attributes.size(), Text.equal, Text.hash
+            );
 
             // 1. validate item data-type
             let {
-                validItemDataType;
-            } = validateItemDataType({
+                isValidAttributesDataType = validItemDataType;
+            } = Commons.validateAttributeDataTypeBulk({
                 attributeDataValues = createItemInput.attributeDataValues;
-                tableMetadata = table.metadata;
+                attributeNameToMetadataMap;
             });
             if (not validItemDataType) {
                 errorBuffer.add("At least one attribute has wrong data-type");
@@ -227,113 +232,6 @@ module {
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    private func validateItemDataType({
-        attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
-        tableMetadata: Database.TableMetadata;
-    }) : {
-        invalidDataTypeAttributeNameToExpectedDataType : HashMap.HashMap<Text, Datatypes.AttributeDataType>;
-        validItemDataType : Bool;
-    } {
-
-        let invalidDataTypeAttributeNameToExpectedDataType = HashMap.HashMap<Text, Datatypes.AttributeDataType>(0, Text.equal, Text.hash);
-
-        let attributeNameToMetadataMap = HashMap.fromIter<Text, Database.AttributeMetadata>(
-            Array.map<Database.AttributeMetadata, (Text, Database.AttributeMetadata)>(tableMetadata.attributes, func attributeMetadata = (attributeMetadata.name, attributeMetadata)).vals(),
-            tableMetadata.attributes.size(), Text.equal, Text.hash
-        );
-
-        for ((attributeName, attributeDataValue) in attributeDataValues.vals()) {
-            var actualAttributeDataType : Datatypes.AttributeDataType = #default;
-            switch (attributeDataValue) {
-                case (#text(textValue)) {
-                    actualAttributeDataType := #text;
-                };
-                case (#int(intValue)) {
-                    actualAttributeDataType := #int;
-                };
-                case (#int8(int8Value)) {
-                    actualAttributeDataType := #int8;
-                };
-                case (#int16(int16Value)) {
-                    actualAttributeDataType := #int16;
-                };
-                case (#int32(int32Value)) {
-                    actualAttributeDataType := #int32;
-                };
-                case (#int64(int64Value)) {
-                    actualAttributeDataType := #int64;
-                };
-                case (#nat(natValue)) {
-                    actualAttributeDataType := #nat;
-                };
-                case (#nat8(nat8Value)) {
-                    actualAttributeDataType := #nat8;
-                };
-                case (#nat16(nat16Value)) {
-                    actualAttributeDataType := #nat16;
-                };
-                case (#nat32(nat32Value)) {
-                    actualAttributeDataType := #nat32;
-                };
-                case (#nat64(nat64Value)) {
-                    actualAttributeDataType := #nat64;
-                };
-                case (#blob(blobValue)) {
-                    actualAttributeDataType := #blob;
-                };
-                case (#float(floatValue)) {
-                    actualAttributeDataType := #float;
-                };
-                case (#char(charValue)) {
-                    actualAttributeDataType := #char;
-                };
-                case (#principal(principalValue)) {
-                    actualAttributeDataType := #principal;
-                };
-                case (#bool(boolValue)) {
-                    actualAttributeDataType := #bool;
-                };
-                case (#list(listValue)) {
-                    actualAttributeDataType := #list;
-                };
-                case (#map(mapValue)) {
-                    actualAttributeDataType := #map;
-                };
-                case (#default) {
-                    actualAttributeDataType := #default;
-                };
-            };
-
-            let validAttributeDataType = validateAttributeDataType({ attributeName; actualAttributeDataType; attributeNameToMetadataMap; });
-
-            if (not validAttributeDataType) {
-                invalidDataTypeAttributeNameToExpectedDataType.put(attributeName, actualAttributeDataType);
-            }
-        };
-
-        return {
-            invalidDataTypeAttributeNameToExpectedDataType;
-            validItemDataType = invalidDataTypeAttributeNameToExpectedDataType.size() == 0;
-        };
-    };
-
-    private func validateAttributeDataType({
-        attributeName: Text;
-        actualAttributeDataType: Datatypes.AttributeDataType;
-        attributeNameToMetadataMap: HashMap.HashMap<Text, Database.AttributeMetadata>;
-    }) : Bool {
-
-        var expectedAttributeDataType : Datatypes.AttributeDataType = #default;
-        ignore do ?{ expectedAttributeDataType := attributeNameToMetadataMap.get(attributeName)!.dataType };
-
-        if (expectedAttributeDataType != actualAttributeDataType) {
-            Debug.print("expected data type: " # debug_show(expectedAttributeDataType) # " does not match actual data type: " # debug_show(actualAttributeDataType));
-        };
-
-        return expectedAttributeDataType == #default or expectedAttributeDataType == actualAttributeDataType;
-    };
 
     private func validateRequiredAttributes({
         attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
