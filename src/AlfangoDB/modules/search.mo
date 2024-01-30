@@ -64,6 +64,7 @@ module {
                 items = Buffer.toArray(filterItemBuffer);
             };
         };
+
         return null;
     };
 

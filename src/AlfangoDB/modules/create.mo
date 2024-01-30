@@ -25,7 +25,7 @@ module {
     public func createDatabase({
         createDatabaseInput: InputTypes.CreateDatabaseInputType;
         alfangoDB: Database.AlfangoDB;
-    }) {
+    }) : OutputTypes.CreateDatabaseOutputType {
 
         // get databases
         let databases = alfangoDB.databases;
@@ -52,7 +52,7 @@ module {
     public func createTable({
         createTableInput: InputTypes.CreateTableInputType;
         alfangoDB: Database.AlfangoDB;
-    }) {
+    }) : OutputTypes.CreateTableOutputType {
 
         // get databases
         let databases = alfangoDB.databases;
@@ -73,15 +73,21 @@ module {
             };
 
             // initialize indexes
-            let indexes = Map.new<Text, Database.Index>();
+            let indexes = Map.new<Text, Database.IndexTable>();
             for (indexMetadata in createTableInput.indexes.vals()) {
-                Map.set(indexes, thash, indexMetadata.attributeName, { items = Map.new<Datatypes.AttributeDataValue, Set.Set<Text>>() });
+                Map.set(indexes, thash, indexMetadata.attributeName, {
+                    attributeName = indexMetadata.attributeName;
+                    items = Map.new<Datatypes.AttributeDataValue, Set.Set<Text>>();
+                });
             };
 
             // initialize unique attribute indexes
             for (attributeMetadata in createTableInput.attributes.vals()) {
                 if (attributeMetadata.unique) {
-                    Map.set(indexes, thash, attributeMetadata.name, { items = Map.new<Datatypes.AttributeDataValue, Set.Set<Text>>() });
+                    Map.set(indexes, thash, attributeMetadata.name, {
+                        attributeName = attributeMetadata.name;
+                        items = Map.new<Datatypes.AttributeDataValue, Set.Set<Text>>();
+                    });
                 };
             };
 
@@ -133,17 +139,18 @@ module {
             let table = Map.get(database.tables, thash, createItemInput.tableName)!;
 
             let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(createItemInput.attributeDataValues.vals(), 0, Text.equal, Text.hash);
-            //////////////////////////////// START VALIDATION ////////////////////////////////
             let attributeNameToMetadataMap = HashMap.fromIter<Text, Database.AttributeMetadata>(
                 Array.map<Database.AttributeMetadata, (Text, Database.AttributeMetadata)>(table.metadata.attributes, func attributeMetadata = (attributeMetadata.name, attributeMetadata)).vals(),
                 table.metadata.attributes.size(), Text.equal, Text.hash
             );
 
+            //////////////////////////////// START VALIDATION ////////////////////////////////
+
             // 1. validate item data-type
             let {
                 isValidAttributesDataType = validItemDataType;
-            } = Commons.validateAttributeDataTypeBulk({
-                attributeDataValues = createItemInput.attributeDataValues;
+            } = Commons.validateAttributeDataTypes({
+                attributeKeyDataValues = createItemInput.attributeDataValues;
                 attributeNameToMetadataMap;
             });
             if (not validItemDataType) {
@@ -166,8 +173,8 @@ module {
             let {
                 invalidUnquieAttributes;
                 uniqueAttributesUnique;
-            } = validateUniqueAttributes({
-                attributeDataValues = createItemInput.attributeDataValues;
+            } = Commons.validateUniqueAttributes({
+                attributeKeyDataValues = createItemInput.attributeDataValues;
                 indexes = table.indexes;
                 tableMetadata = table.metadata;
             });
@@ -179,6 +186,7 @@ module {
                 Debug.print("error(s) creating item: " # debug_show(Buffer.toArray(errorBuffer)));
                 return #err(Buffer.toArray(errorBuffer));
             };
+
             ////////////////////////////////   END VALIDATION    ////////////////////////////////
 
             let newItemId = await Utils.generateULIDAsync();
@@ -252,46 +260,6 @@ module {
         return {
             actualRequiredAttributes = Buffer.toArray(actualRequiredAttributes);
             requiredAttributesPresent = expectedRequiredAttributes.size() == actualRequiredAttributes.size();
-        };
-    };
-
-    private func validateUniqueAttributes({
-        attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
-        indexes: Map.Map<Text, Database.Index>;
-        tableMetadata: Database.TableMetadata;
-    }) : {
-        invalidUnquieAttributes : [ Text ];
-        uniqueAttributesUnique : Bool;
-    } {
-        let attributesMetadata = tableMetadata.attributes;
-        let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(attributeDataValues.vals(), 0, Text.equal, Text.hash);
-        let invalidUnquieAttributes = Buffer.Buffer<Text>(0);
-
-        label l0 for (attributeMetadata in attributesMetadata.vals()) {
-            // check if index is unique
-            if (not attributeMetadata.unique) {
-                continue l0;
-            };
-
-            let attributeName = attributeMetadata.name;
-            ignore do ?{
-                let indexItems = Map.get(indexes, thash, attributeName)!.items;
-                let attributeValue = attributeDataValueMap.get(attributeName)!;
-
-                // check if attribute value has index
-                if (Map.has(indexItems, Utils.DataTypeValueHashUtils, attributeValue)) {
-                    let idSet = Map.get(indexItems, Utils.DataTypeValueHashUtils, attributeValue)!;
-                    if (Set.size(idSet) > 0) {
-                        Debug.print("attribute: " # debug_show(attributeName) # " is not unique");
-                        invalidUnquieAttributes.add(attributeName);
-                    };
-                };
-            };
-        };
-
-        return {
-            invalidUnquieAttributes = Buffer.toArray(invalidUnquieAttributes);
-            uniqueAttributesUnique = invalidUnquieAttributes.size() == 0;
         };
     };
 

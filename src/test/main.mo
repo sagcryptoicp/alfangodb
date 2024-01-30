@@ -28,4 +28,12 @@ shared ({ caller = initializer }) actor class Test() = this {
         AlfangoDB.scan({ scanInput = args; alfangoDB; });
     };
 
+    public shared (msg) func updateOperation({ updateOpsInput : AlfangoDB.UpdateOpsInputType; }) : async AlfangoDB.UpdateOpsOutputType {
+        return await AlfangoDB.updateOperation({ updateOpsInput; alfangoDB; });
+    };
+
+    public query (msg) func queryOperation({ queryOpsInput : AlfangoDB.QueryOpsInputType; }) : async AlfangoDB.QueryOpsOutputType {
+        return AlfangoDB.queryOperation({ queryOpsInput; alfangoDB; });
+    };
+
 };

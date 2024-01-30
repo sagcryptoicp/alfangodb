@@ -8,6 +8,7 @@ import Read "modules/read";
 import Update "modules/update";
 import Delete "modules/delete";
 import Search "modules/search";
+import Service "service";
 
 module {
 
@@ -37,7 +38,7 @@ module {
     public type TableIndexMetadata = Database.TableIndexMetadata;
     public type TableMetadata = Database.TableMetadata;
     public type Item = Database.Item;
-    public type Index = Database.Index;
+    public type IndexTable = Database.IndexTable;
     public type Table = Database.Table;
     public type Database = Database.Database;
 
@@ -57,10 +58,12 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type GetTableMetadataInputType = InputTypes.GetTableMetadataInputType;
     public type GetItemByIdInputType = InputTypes.GetItemByIdInputType;
+    public type GetTableMetadataOutputType = OutputTypes.GetTableMetadataOutputType;
     public type GetItemByIdOutputType = OutputTypes.GetItemByIdOutputType;
 
-    public let { getItemById; } = Read;
+    public let { getTableMetadata; getItemById; } = Read;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +77,10 @@ module {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public let {} = Update;
+    public type UpdateItemInputType = InputTypes.UpdateItemInputType;
+    public type UpdateItemOutputType = OutputTypes.UpdateItemOutputType;
+
+    public let { updateItem; } = Update;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -82,4 +88,12 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type UpdateOpsInputType = InputTypes.UpdateOpsInputType;
+    public type QueryOpsInputType = InputTypes.QueryOpsInputType;
+    public type UpdateOpsOutputType = OutputTypes.UpdateOpsOutputType;
+    public type QueryOpsOutputType = OutputTypes.QueryOpsOutputType;
+
+    public let { updateOperation; queryOperation; } = Service;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };

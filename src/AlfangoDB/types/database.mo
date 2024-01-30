@@ -10,6 +10,7 @@ module {
 
     public type Id = Text;
     public type DatabaseName = Text;
+    public type TableName = Text;
     public type AttributeName = Text;
     public type IndexName = Text;
 
@@ -25,8 +26,7 @@ module {
 
     public type TableIndexMetadata = {
         name : IndexName;
-        nonUnique : Bool;
-        attributeName : Text;
+        attributeName : AttributeName;
     };
 
     public type TableMetadata = {
@@ -44,7 +44,8 @@ module {
         var updatedAt : Time.Time;
     };
 
-    public type Index = {
+    public type IndexTable = {
+        attributeName : AttributeName;
         items : Map.Map<AttributeDataValue, Set.Set<Id>>;
     };
 
@@ -52,12 +53,12 @@ module {
         name : Text;
         metadata : TableMetadata;
         items : Map.Map<Id, Item>;
-        indexes : Map.Map<AttributeName, Index>;        // single attribute indexes
+        indexes : Map.Map<AttributeName, IndexTable>;        // single attribute indexes
     };
 
     public type Database = {
         name : DatabaseName;
-        tables : Map.Map<Text, Table>;
+        tables : Map.Map<TableName, Table>;
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
