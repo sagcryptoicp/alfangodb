@@ -32,8 +32,9 @@ module {
 
         // check if database exists
         if (Map.has(databases, thash, createDatabaseInput.name)) {
-            Debug.print("database already exists");
-            return;
+            let remark = "database already exists: " # debug_show(createDatabaseInput.name);
+            Debug.print(remark);
+            return #err([ remark ]);
         };
 
         // create database
@@ -45,6 +46,7 @@ module {
         // add database to databases
         Map.set(databases, thash, database.name, database);
         Debug.print("database created with name: " # debug_show(database.name));
+        return #ok({});
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +61,9 @@ module {
 
         // check if database exists
         if (not Map.has(databases, thash, createTableInput.databaseName)) {
-            Debug.print("database does not exist");
-            return;
+            let remark = "database does not exist: " # debug_show(createTableInput.databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
         };
  
         ignore do ?{
@@ -68,8 +71,9 @@ module {
 
             // check if table exists
             if (Map.has(database.tables, thash, createTableInput.name)) {
-                Debug.print("table already exists");
-                return;
+                let remark = "table already exists: " # debug_show(createTableInput.name);
+                Debug.print(remark);
+                return #err([ remark ]);
             };
 
             // initialize indexes
@@ -105,7 +109,10 @@ module {
             // add table to database
             Map.set(database.tables, thash, table.name, table);
             Debug.print("table created with name: " # debug_show(table.name));
+            return #ok({});
         };
+
+        Prelude.unreachable();
     };
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,8 +127,9 @@ module {
 
         // check if database exists
         if (not Map.has(databases, thash, createItemInput.databaseName)) {
-            Debug.print("database does not exist");
-            return #err([ "database does not exist" ]);
+            let remark = "database does not exist: " # debug_show(createItemInput.databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
         };
 
         let errorBuffer = Buffer.Buffer<Text>(0);
@@ -130,7 +138,7 @@ module {
 
             // check if table exists
             if (not Map.has(database.tables, thash, createItemInput.tableName)) {
-                errorBuffer.add("table "# debug_show(createItemInput.tableName) # " does not exist");
+                errorBuffer.add("table does not exist: " # debug_show(createItemInput.tableName));
                 Debug.print("error(s) creating item: " # debug_show(Buffer.toArray(errorBuffer)));
                 return #err(Buffer.toArray(errorBuffer));
             };
@@ -233,7 +241,10 @@ module {
             // add item to table
             Map.set(table.items, thash, item.id, item);
             Debug.print("item created with id: " # debug_show(item.id));
-            return #ok(item.id);
+            return #ok({
+                id = item.id;
+                item = Map.toArray(item.attributeDataValueMap);
+            });
         };
 
         Prelude.unreachable();

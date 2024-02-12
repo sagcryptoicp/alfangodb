@@ -113,7 +113,10 @@ module {
                 Map.set(item.attributeDataValueMap, thash, attributeName, updatedAttributeDataValue);
             };
             Debug.print("item updated with id: " # debug_show(updateItemInput.id));
-            return #ok(Map.toArray(item.attributeDataValueMap));
+            return #ok({
+                id = updateItemInput.id;
+                item = Map.toArray(item.attributeDataValueMap);
+            });
         };
 
         Prelude.unreachable();

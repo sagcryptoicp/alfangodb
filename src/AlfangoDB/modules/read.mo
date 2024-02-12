@@ -57,30 +57,38 @@ module {
 
         // check if database exists
         if (not Map.has(databases, thash, getItemByIdInput.databaseName)) {
-            Debug.print("database does not exist");
-            return null;
+            let remark = "database does not exist: " # debug_show(getItemByIdInput.databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
         };
 
-        do ?{
+        ignore do ?{
             let database = Map.get(databases, thash, getItemByIdInput.databaseName)!;
 
             // check if table exists
             if (not Map.has(database.tables, thash, getItemByIdInput.tableName)) {
-                Debug.print("table does not exist");
-                return null;
+                let remark = "table does not exist: " # debug_show(getItemByIdInput.tableName); 
+                Debug.print(remark);
+                return #err([ remark ]);
             };
 
             let table = Map.get(database.tables, thash, getItemByIdInput.tableName)!;
             // check if item exists
             if (not Map.has(table.items, thash, getItemByIdInput.id)) {
-                Debug.print("item does not exist");
-                return null;
+                let remark = "item does not exist" # debug_show(getItemByIdInput.id);
+                Debug.print(remark);
+                return #err([ remark ]);
             };
 
             // get item
             let item = Map.get(table.items, thash, getItemByIdInput.id)!;
-            return ?Map.toArray(item.attributeDataValueMap);
+            return #ok({
+                id = getItemByIdInput.id;
+                item = Map.toArray(item.attributeDataValueMap)
+            });
         };
+
+        Prelude.unreachable();
     };
 
 };

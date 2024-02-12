@@ -7,11 +7,11 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public type CreateDatabaseOutputType = ();
+    public type CreateDatabaseOutputType = Result.Result<{}, [ Text ]>;
 
-    public type CreateTableOutputType = ();
+    public type CreateTableOutputType = Result.Result<{}, [ Text ]>;
 
-    public type CreateItemOutputType = Result.Result<Text, [ Text ]>;
+    public type CreateItemOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -21,17 +21,15 @@ module {
         metadata : Database.TableMetadata;
     };
 
-    public type GetItemByIdOutputType = ?[ (Text, Datatypes.AttributeDataValue) ];
+    public type GetItemByIdOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public type ScanOutputType = ?{
-        items: [ [ (Text, Datatypes.AttributeDataValue) ] ];
-    };
+    public type ScanOutputType = Result.Result<[{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }], [ Text ]>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
-    public type UpdateItemOutputType = Result.Result<[ (Text, Datatypes.AttributeDataValue) ], [ Text ]>;
+    public type UpdateItemOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -35,8 +35,9 @@ module {
 
         // check if database exists
         if (not Map.has(databases, thash, databaseName)) {
-            Debug.print("database does not exist");
-            return null;
+            let remark = "database does not exist: " # debug_show(databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
         };
 
         ignore do ?{
@@ -44,8 +45,9 @@ module {
 
             // check if table exists
             if (not Map.has(database.tables, thash, tableName)) {
-                Debug.print("table does not exist");
-                return null;
+                let remark = "table does not exist: " # debug_show(tableName);
+                Debug.print(remark);
+                return #err([ remark ]);
             };
 
             let table = Map.get(database.tables, thash, tableName)!;
@@ -55,17 +57,18 @@ module {
                 applyFilterExpression({ item; filterExpressions; });
             });
 
-            let filterItemBuffer = Buffer.Buffer<[(Text, Datatypes.AttributeDataValue)]>(filteredItemMap.size());
+            let filterItemBuffer = Buffer.Buffer<{ id : Text; item: [(Text, Datatypes.AttributeDataValue)] }>(filteredItemMap.size());
             for (filteredItem in Map.vals(filteredItemMap)) {
-                filterItemBuffer.add(Map.toArray(filteredItem.attributeDataValueMap));
+                filterItemBuffer.add({
+                    id = filteredItem.id;
+                    item = Map.toArray(filteredItem.attributeDataValueMap);
+                });
             };
 
-            return ?{
-                items = Buffer.toArray(filterItemBuffer);
-            };
+            return #ok(Buffer.toArray(filterItemBuffer));
         };
 
-        return null;
+        Prelude.unreachable();
     };
 
     private func applyFilterExpression({
