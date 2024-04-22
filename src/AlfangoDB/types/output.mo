@@ -15,10 +15,15 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type TableMetadataOutputType = {
+        attributes : [ Database.AttributeMetadata ];
+        indexes : [ Database.TableIndexMetadata ];
+    };
+
     public type GetTableMetadataOutputType = ?{
         databaseName: Text;
         tableName: Text;
-        metadata : Database.TableMetadata;
+        metadata : TableMetadataOutputType;
     };
 
     public type GetItemByIdOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
@@ -29,6 +34,8 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
+    public type AddAttributeOutputType = Result.Result<{}, [ Text ]>;
+
     public type UpdateItemOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +43,7 @@ module {
     public type UpdateOpsOutputType = {
         #CreateDatabaseOutput : CreateDatabaseOutputType;
         #CreateTableOutput : CreateTableOutputType;
+        #AddAttributeOutput : AddAttributeOutputType;
         #CreateItemOutput : CreateItemOutputType;
         #UpdateItemOutput : UpdateItemOutputType;
     };

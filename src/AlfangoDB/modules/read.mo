@@ -9,6 +9,7 @@ import Prelude "mo:base/Prelude";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
+import Iter "mo:base/Iter";
 
 module {
 
@@ -40,7 +41,10 @@ module {
             return ?{
                 databaseName = getTableMetadataInput.databaseName;
                 tableName = getTableMetadataInput.tableName;
-                metadata = table.metadata;
+                metadata = {
+                    attributes = Iter.toArray(Map.vals(table.metadata.attributesMap));
+                    indexes = table.metadata.indexes;
+                };
             };
         };
 

@@ -24,7 +24,7 @@ module {
         var unwrappedAttributeDataType : AttributeDataType = #default;
 
         switch (attributeDataValue) {
-            case (#int(intValue)) { unwrappedAttributeDataType := #int32; };
+            case (#int(intValue)) { unwrappedAttributeDataType := #int; };
             case (#int8(int8Value)) { unwrappedAttributeDataType := #int8; };
             case (#int16(int16Value)) { unwrappedAttributeDataType := #int16; };
             case (#int32(int32Value)) { unwrappedAttributeDataType := #int32; };
@@ -67,7 +67,7 @@ module {
 
     public func validateAttributeDataTypes({
         attributeKeyDataValues : [(Text, AttributeDataValue)];
-        attributeNameToMetadataMap : HashMap.HashMap<Text, Database.AttributeMetadata>;
+        attributeNameToMetadataMap : Map.Map<Text, Database.AttributeMetadata>;
     }) : {
         isValidAttributesDataType : Bool;
     } {
@@ -76,12 +76,11 @@ module {
         let invalidAttributes = Buffer.Buffer<Text>(0);
 
         for ((attributeName, attributeDataValue) in attributeKeyDataValues.vals()) {
-            let attributeExistInTable = Option.isSome(attributeNameToMetadataMap.get(attributeName));
-            var isValidAttributeDataType : Bool = false;
+            let attributeExistInTable = Map.has(attributeNameToMetadataMap, thash, attributeName);
 
             if (attributeExistInTable) {
                 var expectedAttributeDataType : Datatypes.AttributeDataType = #default;
-                ignore do ?{ expectedAttributeDataType := attributeNameToMetadataMap.get(attributeName)!.dataType };
+                ignore do ?{ expectedAttributeDataType := Map.get(attributeNameToMetadataMap, thash, attributeName)!.dataType };
                 let {
                     isValidAttributeDataType;
                     actualAttributeDataType;
@@ -137,11 +136,11 @@ module {
         invalidUnquieAttributes : [ Text ];
         uniqueAttributesUnique : Bool;
     } {
-        let attributesMetadata = tableMetadata.attributes;
+
         let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(attributeKeyDataValues.vals(), 0, Text.equal, Text.hash);
         let invalidUnquieAttributes = Buffer.Buffer<Text>(0);
 
-        label l0 for (attributeMetadata in attributesMetadata.vals()) {
+        label l0 for (attributeMetadata in Map.vals(tableMetadata.attributesMap)) {
             // check for unique attribute
             if (not attributeMetadata.unique) {
                 continue l0;

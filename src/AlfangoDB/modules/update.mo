@@ -9,13 +9,64 @@ import Debug "mo:base/Debug";
 import Prelude "mo:base/Prelude";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
-import Array "mo:base/Array";
 import Option "mo:base/Option";
 import Map "mo:map/Map";
 import Set "mo:map/Set";
 import { thash } "mo:map/Map";
 
 module {
+
+    public func addAttribute({
+        addAttributeInput: InputTypes.AddAttributeInputType;
+        alfangoDB: Database.AlfangoDB;
+    }) : OutputTypes.AddAttributeOutputType {
+
+        // get databases
+        let databases = alfangoDB.databases;
+
+        // check if database exists
+        if (not Map.has(databases, thash, addAttributeInput.databaseName)) {
+            Debug.print("database does not exist");
+            return #err([ "database does not exist" ]);
+        };
+
+        let errorBuffer = Buffer.Buffer<Text>(0);
+        ignore do ?{
+            let database = Map.get(databases, thash, addAttributeInput.databaseName)!;
+
+            // check if table exists
+            if (not Map.has(database.tables, thash, addAttributeInput.tableName)) {
+                errorBuffer.add("table "# debug_show(addAttributeInput.tableName) # " does not exist");
+                Debug.print("error(s) adding attribute: " # debug_show(Buffer.toArray(errorBuffer)));
+                return #err(Buffer.toArray(errorBuffer));
+            };
+
+            // get table
+            let table = Map.get(database.tables, thash, addAttributeInput.tableName)!;
+
+            // check if attribute exists
+            if (Map.has(table.metadata.attributesMap, thash, addAttributeInput.attribute.name)) {
+                errorBuffer.add("attribute "# debug_show(addAttributeInput.attribute.name) # " already exists");
+                Debug.print("error(s) adding attribute: " # debug_show(Buffer.toArray(errorBuffer)));
+                return #err(Buffer.toArray(errorBuffer));
+            };
+
+            // initialize unique attribute indexes
+            if (addAttributeInput.attribute.unique) {
+                Map.set(table.indexes, thash, addAttributeInput.attribute.name, {
+                    attributeName = addAttributeInput.attribute.name;
+                    items = Map.new<Datatypes.AttributeDataValue, Set.Set<Text>>();
+                });
+            };
+
+            // add attribute to metadata
+            Map.set(table.metadata.attributesMap, thash, addAttributeInput.attribute.name, addAttributeInput.attribute);
+
+            return #ok({});
+        };
+
+        Prelude.unreachable();
+    };
 
     public func updateItem({
         updateItemInput: InputTypes.UpdateItemInputType;
@@ -53,10 +104,7 @@ module {
             };
 
             let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(updateItemInput.attributeDataValues.vals(), 0, Text.equal, Text.hash);
-            let attributeNameToMetadataMap = HashMap.fromIter<Text, Database.AttributeMetadata>(
-                Array.map<Database.AttributeMetadata, (Text, Database.AttributeMetadata)>(table.metadata.attributes, func attributeMetadata = (attributeMetadata.name, attributeMetadata)).vals(),
-                table.metadata.attributes.size(), Text.equal, Text.hash
-            );
+
             //////////////////////////////// START VALIDATION ////////////////////////////////
 
             // 1. validate item data-type
@@ -64,7 +112,7 @@ module {
                 isValidAttributesDataType = validItemDataType;
             } = Commons.validateAttributeDataTypes({
                 attributeKeyDataValues = updateItemInput.attributeDataValues;
-                attributeNameToMetadataMap;
+                attributeNameToMetadataMap = table.metadata.attributesMap;
             });
             if (not validItemDataType) {
                 errorBuffer.add("At least one update attribute has wrong data-type");

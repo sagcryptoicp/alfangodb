@@ -8,7 +8,6 @@ import Map "mo:map/Map";
 import Set "mo:map/Set";
 import { thash } "mo:map/Map";
 import Debug "mo:base/Debug";
-import Result "mo:base/Result";
 import HashMap "mo:base/HashMap";
 import Buffer "mo:base/Buffer";
 import Text "mo:base/Text";
@@ -85,8 +84,8 @@ module {
                 });
             };
 
-            // initialize unique attribute indexes
             for (attributeMetadata in createTableInput.attributes.vals()) {
+                // initialize unique attribute indexes
                 if (attributeMetadata.unique) {
                     Map.set(indexes, thash, attributeMetadata.name, {
                         attributeName = attributeMetadata.name;
@@ -99,7 +98,7 @@ module {
             let table : Database.Table = {
                 name = createTableInput.name;
                 metadata = {
-                    attributes = createTableInput.attributes;
+                    attributesMap = Map.fromIter<Text, Database.AttributeMetadata>(Array.map<Database.AttributeMetadata, (Text, Database.AttributeMetadata)>(createTableInput.attributes, func attributeMetadata = (attributeMetadata.name, attributeMetadata)).vals(), thash);
                     indexes = createTableInput.indexes;
                 };
                 items = Map.new<Text, Database.Item>();
@@ -147,10 +146,6 @@ module {
             let table = Map.get(database.tables, thash, createItemInput.tableName)!;
 
             let attributeDataValueMap = HashMap.fromIter<Text, Datatypes.AttributeDataValue>(createItemInput.attributeDataValues.vals(), 0, Text.equal, Text.hash);
-            let attributeNameToMetadataMap = HashMap.fromIter<Text, Database.AttributeMetadata>(
-                Array.map<Database.AttributeMetadata, (Text, Database.AttributeMetadata)>(table.metadata.attributes, func attributeMetadata = (attributeMetadata.name, attributeMetadata)).vals(),
-                table.metadata.attributes.size(), Text.equal, Text.hash
-            );
 
             //////////////////////////////// START VALIDATION ////////////////////////////////
 
@@ -159,7 +154,7 @@ module {
                 isValidAttributesDataType = validItemDataType;
             } = Commons.validateAttributeDataTypes({
                 attributeKeyDataValues = createItemInput.attributeDataValues;
-                attributeNameToMetadataMap;
+                attributeNameToMetadataMap = table.metadata.attributesMap;
             });
             if (not validItemDataType) {
                 errorBuffer.add("At least one attribute has wrong data-type");
@@ -214,7 +209,7 @@ module {
             };
 
             // add unique attribute indexes
-            for (attributeMetadata in table.metadata.attributes.vals()) {
+            for (attributeMetadata in Map.vals(table.metadata.attributesMap)) {
                 if (attributeMetadata.unique) {
                     ignore do ?{
                         let attributeName = attributeMetadata.name;
@@ -259,18 +254,18 @@ module {
         actualRequiredAttributes : [ Text ];
         requiredAttributesPresent : Bool;
     } {
-        let expectedRequiredAttributes = Array.filter<Database.AttributeMetadata>(tableMetadata.attributes, func attributeMetadata = attributeMetadata.required);
+        let expectedRequiredAttributesMap = Map.filter<Text, Database.AttributeMetadata>(tableMetadata.attributesMap, thash, func _acceptEntry(_attributeName : Text, attributeMetadata: Database.AttributeMetadata) : Bool { attributeMetadata.required });
         let actualRequiredAttributes = Buffer.Buffer<Text>(0);
 
         for ((attributeName, _) in attributeDataValues.vals()) {
-            if (Option.isSome(Array.find<Database.AttributeMetadata>(expectedRequiredAttributes, func attributeMetadata = attributeMetadata.name == attributeName))) {
+            if (Map.has(expectedRequiredAttributesMap, thash, attributeName)) {
                 actualRequiredAttributes.add(attributeName);
             };
         };
 
         return {
             actualRequiredAttributes = Buffer.toArray(actualRequiredAttributes);
-            requiredAttributesPresent = expectedRequiredAttributes.size() == actualRequiredAttributes.size();
+            requiredAttributesPresent = Map.size(expectedRequiredAttributesMap) == actualRequiredAttributes.size();
         };
     };
 
