@@ -30,7 +30,7 @@ module {
     };
 
     public type TableMetadata = {
-        attributes : [ AttributeMetadata ];
+        attributesMap : Map.Map<AttributeName, AttributeMetadata>;
         indexes : [ TableIndexMetadata ];
     };
 

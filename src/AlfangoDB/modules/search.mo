@@ -53,7 +53,7 @@ module {
             let table = Map.get(database.tables, thash, tableName)!;
 
             let tableItems = table.items;
-            let filteredItemMap = Map.filter(tableItems, thash, func(itemId : Database.Id, item: Database.Item) : Bool {
+            let filteredItemMap = Map.filter(tableItems, thash, func(_itemId : Database.Id, item: Database.Item) : Bool {
                 applyFilterExpression({ item; filterExpressions; });
             });
 

@@ -46,6 +46,12 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type AddAttributeInputType = {
+        databaseName : Text;
+        tableName : Text;
+        attribute : Database.AttributeMetadata;
+    };
+
     public type UpdateItemInputType = {
         databaseName: Text;
         tableName: Text;
@@ -56,6 +62,7 @@ module {
     public type UpdateOpsInputType = {
         #CreateDatabaseInput : CreateDatabaseInputType;
         #CreateTableInput : CreateTableInputType;
+        #AddAttributeInput : AddAttributeInputType;
         #CreateItemInput : CreateItemInputType;
         #UpdateItemInput : UpdateItemInputType;
     };

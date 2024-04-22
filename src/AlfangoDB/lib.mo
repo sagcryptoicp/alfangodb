@@ -78,6 +78,11 @@ module {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type AddAttributeInputType = InputTypes.AddAttributeInputType;
+    public type AddAttributeOutputType = OutputTypes.AddAttributeOutputType;
+
+    public let { addAttribute; } = Update;
+
     public type UpdateItemInputType = InputTypes.UpdateItemInputType;
     public type UpdateItemOutputType = OutputTypes.UpdateItemOutputType;
 

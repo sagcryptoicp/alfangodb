@@ -21,6 +21,9 @@ module {
             case (#CreateTableInput(createTableInput)) {
                 return #CreateTableOutput(Create.createTable({ createTableInput; alfangoDB; }));
             };
+            case (#AddAttributeInput(addAttributeInput)) {
+                return #AddAttributeOutput(Update.addAttribute({ addAttributeInput; alfangoDB; }));
+            };
             case (#CreateItemInput(createItemInput)) {
                 return #CreateItemOutput(await Create.createItem({ createItemInput; alfangoDB; }));
             };
