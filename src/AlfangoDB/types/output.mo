@@ -1,6 +1,5 @@
 import Datatypes "datatype";
 import Database "database";
-import SearchTypes "search";
 import Result "mo:base/Result";
 
 module {

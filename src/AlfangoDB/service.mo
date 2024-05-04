@@ -3,7 +3,6 @@ import OutputTypes "types/output";
 import Create "modules/create";
 import Read "modules/read";
 import Update "modules/update";
-import Delete "modules/delete";
 import Search "modules/search";
 import Database "types/database";
 

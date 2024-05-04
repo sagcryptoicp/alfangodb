@@ -1,4 +1,3 @@
-import Database "database";
 import Datatypes "datatype";
 
 module {
