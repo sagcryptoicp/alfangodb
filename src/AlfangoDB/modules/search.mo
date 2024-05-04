@@ -10,9 +10,6 @@ import Prelude "mo:base/Prelude";
 import Text "mo:base/Text";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
-import Blob "mo:base/Blob";
-import Principal "mo:base/Principal";
-
 module {
 
     type AttributeDataValue = Datatypes.AttributeDataValue;

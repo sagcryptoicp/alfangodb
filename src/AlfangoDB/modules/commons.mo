@@ -2,7 +2,6 @@ import Datatypes "../types/datatype";
 import Database "../types/database";
 import Utils "../utils";
 import HashMap "mo:base/HashMap";
-import Option "mo:base/Option";
 import Text "mo:base/Text";
 import Buffer "mo:base/Buffer";
 import Debug "mo:base/Debug";

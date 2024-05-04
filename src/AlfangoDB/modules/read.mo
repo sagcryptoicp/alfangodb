@@ -1,4 +1,3 @@
-import Datatypes "../types/datatype";
 import Database "../types/database";
 import InputTypes "../types/input";
 import OutputTypes "../types/output";
@@ -6,9 +5,6 @@ import Map "mo:map/Map";
 import { thash } "mo:map/Map";
 import Debug "mo:base/Debug";
 import Prelude "mo:base/Prelude";
-import Text "mo:base/Text";
-import Array "mo:base/Array";
-import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 
 module {
