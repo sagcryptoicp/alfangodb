@@ -23,6 +23,9 @@ module {
             case (#AddAttributeInput(addAttributeInput)) {
                 return #AddAttributeOutput(Update.addAttribute({ addAttributeInput; alfangoDB; }));
             };
+            case (#DropAttributeInput(dropAttributeInput)) {
+                return #DropAttributeOutput(Update.dropAttribute({ dropAttributeInput; alfangoDB; }));
+            };
             case (#CreateItemInput(createItemInput)) {
                 return #CreateItemOutput(await Create.createItem({ createItemInput; alfangoDB; }));
             };

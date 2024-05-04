@@ -83,6 +83,11 @@ module {
 
     public let { addAttribute; } = Update;
 
+    public type DropAttributeInputType = InputTypes.DropAttributeInputType;
+    public type DropAttributeOutputType = OutputTypes.DropAttributeOutputType;
+
+    public let { dropAttribute; } = Update;
+
     public type UpdateItemInputType = InputTypes.UpdateItemInputType;
     public type UpdateItemOutputType = OutputTypes.UpdateItemOutputType;
 

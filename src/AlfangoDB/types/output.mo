@@ -33,7 +33,9 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
-    public type AddAttributeOutputType = Result.Result<{}, [ Text ]>;
+    public type AddAttributeOutputType = Result.Result<{ databaseName : Text; tableName : Text; attributeName : Text; }, [ Text ]>;
+
+    public type DropAttributeOutputType = Result.Result<{ databaseName : Text; tableName : Text; attributeName : Text; }, [ Text ]>;
 
     public type UpdateItemOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
 
@@ -43,6 +45,7 @@ module {
         #CreateDatabaseOutput : CreateDatabaseOutputType;
         #CreateTableOutput : CreateTableOutputType;
         #AddAttributeOutput : AddAttributeOutputType;
+        #DropAttributeOutput : DropAttributeOutputType;
         #CreateItemOutput : CreateItemOutputType;
         #UpdateItemOutput : UpdateItemOutputType;
     };

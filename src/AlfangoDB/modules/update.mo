@@ -10,6 +10,7 @@ import Prelude "mo:base/Prelude";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Option "mo:base/Option";
+import Time "mo:base/Time";
 import Map "mo:map/Map";
 import Set "mo:map/Set";
 import { thash } "mo:map/Map";
@@ -62,7 +63,69 @@ module {
             // add attribute to metadata
             Map.set(table.metadata.attributesMap, thash, addAttributeInput.attribute.name, addAttributeInput.attribute);
 
-            return #ok({});
+            return #ok({
+                databaseName = addAttributeInput.databaseName;
+                tableName = addAttributeInput.tableName;
+                attributeName = addAttributeInput.attribute.name;
+            });
+        };
+
+        Prelude.unreachable();
+    };
+
+    public func dropAttribute({
+        dropAttributeInput: InputTypes.DropAttributeInputType;
+        alfangoDB: Database.AlfangoDB;
+    }) : OutputTypes.DropAttributeOutputType {
+
+        // get databases
+        let databases = alfangoDB.databases;
+
+        // check if database exists
+        if (not Map.has(databases, thash, dropAttributeInput.databaseName)) {
+            Debug.print("database does not exist");
+            return #err([ "database does not exist" ]);
+        };
+
+        let errorBuffer = Buffer.Buffer<Text>(0);
+        ignore do ?{
+            let database = Map.get(databases, thash, dropAttributeInput.databaseName)!;
+
+            // check if table exists
+            if (not Map.has(database.tables, thash, dropAttributeInput.tableName)) {
+                errorBuffer.add("table "# debug_show(dropAttributeInput.tableName) # " does not exist");
+                Debug.print("error(s) dropping attribute: " # debug_show(Buffer.toArray(errorBuffer)));
+                return #err(Buffer.toArray(errorBuffer));
+            };
+
+            // get table
+            let table = Map.get(database.tables, thash, dropAttributeInput.tableName)!;
+
+            // check if attribute does not exist
+            if (not Map.has(table.metadata.attributesMap, thash, dropAttributeInput.attributeName)) {
+                errorBuffer.add("attribute "# debug_show(dropAttributeInput.attributeName) # " does not exist");
+                Debug.print("error(s) dropping attribute: " # debug_show(Buffer.toArray(errorBuffer)));
+                return #err(Buffer.toArray(errorBuffer));
+            };
+
+            // remove attribute from indexes
+            if (Map.has(table.indexes, thash, dropAttributeInput.attributeName)) {
+                Map.delete(table.indexes, thash, dropAttributeInput.attributeName);
+            };
+
+            // remove attribute from metadata
+            Map.delete(table.metadata.attributesMap, thash, dropAttributeInput.attributeName);
+
+            // remove attribute from items
+            for (item in Map.vals(table.items)) {
+                Map.delete(item.attributeDataValueMap, thash, dropAttributeInput.attributeName);
+            };
+
+            return #ok({
+                databaseName = dropAttributeInput.databaseName;
+                tableName = dropAttributeInput.tableName;
+                attributeName = dropAttributeInput.attributeName;
+            });
         };
 
         Prelude.unreachable();
@@ -160,6 +223,10 @@ module {
                 // update item
                 Map.set(item.attributeDataValueMap, thash, attributeName, updatedAttributeDataValue);
             };
+
+            // update updatedAt field
+            item.updatedAt := Time.now();
+
             Debug.print("item updated with id: " # debug_show(updateItemInput.id));
             return #ok({
                 id = updateItemInput.id;

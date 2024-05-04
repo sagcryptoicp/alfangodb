@@ -52,6 +52,12 @@ module {
         attribute : Database.AttributeMetadata;
     };
 
+    public type DropAttributeInputType = {
+        databaseName : Text;
+        tableName : Text;
+        attributeName : Text;
+    };
+
     public type UpdateItemInputType = {
         databaseName: Text;
         tableName: Text;
@@ -59,10 +65,13 @@ module {
         attributeDataValues: [ (Text, Datatypes.AttributeDataValue) ];
     };
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public type UpdateOpsInputType = {
         #CreateDatabaseInput : CreateDatabaseInputType;
         #CreateTableInput : CreateTableInputType;
         #AddAttributeInput : AddAttributeInputType;
+        #DropAttributeInput : DropAttributeInputType;
         #CreateItemInput : CreateItemInputType;
         #UpdateItemInput : UpdateItemInputType;
     };
