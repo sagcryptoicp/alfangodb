@@ -51,6 +51,9 @@ module {
             case (#ScanInput(scanInput)) {
                 return #ScanOutput(Search.scan({ scanInput; alfangoDB; }));
             };
+            case (#PaginatedScanInput(paginatedScanInput)) {
+                return #PaginatedScanOutput(Search.paginatedScan({ paginatedScanInput; alfangoDB; }));
+            };
         }
 
     };

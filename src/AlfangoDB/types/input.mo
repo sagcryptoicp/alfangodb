@@ -44,6 +44,14 @@ module {
         filterExpressions: [ SearchTypes.FilterExpressionType ];
     };
 
+    public type PaginatedScanInputType = {
+        databaseName: Text;
+        tableName: Text;
+        filterExpressions: [ SearchTypes.FilterExpressionType ];
+        offset: Nat;
+        limit: Nat;
+    };
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public type AddAttributeInputType = {
@@ -80,6 +88,7 @@ module {
         #GetTableMetadataInput : GetTableMetadataInputType;
         #GetItemByIdInput : GetItemByIdInputType;
         #ScanInput : ScanInputType;
+        #PaginatedScanInput : PaginatedScanInputType;
     };
 
 };
