@@ -48,21 +48,99 @@ module {
             };
 
             let table = Map.get(database.tables, thash, tableName)!;
-
             let tableItems = table.items;
+
             let filteredItemMap = Map.filter(tableItems, thash, func(_itemId : Database.Id, item: Database.Item) : Bool {
                 applyFilterExpression({ item; filterExpressions; });
             });
 
-            let filterItemBuffer = Buffer.Buffer<{ id : Text; item: [(Text, Datatypes.AttributeDataValue)] }>(filteredItemMap.size());
+            let filteredItemBuffer = Buffer.Buffer<{ id : Text; item: [(Text, Datatypes.AttributeDataValue)] }>(filteredItemMap.size());
             for (filteredItem in Map.vals(filteredItemMap)) {
-                filterItemBuffer.add({
+                filteredItemBuffer.add({
                     id = filteredItem.id;
                     item = Map.toArray(filteredItem.attributeDataValueMap);
                 });
             };
 
-            return #ok(Buffer.toArray(filterItemBuffer));
+            return #ok(Buffer.toArray(filteredItemBuffer));
+        };
+
+        Prelude.unreachable();
+    };
+
+    public func paginatedScan({
+        paginatedScanInput: InputTypes.PaginatedScanInputType;
+        alfangoDB: Database.AlfangoDB;
+    }) : OutputTypes.PaginatedScanOutputType {
+
+        // get databases
+        let databases = alfangoDB.databases;
+
+        let { databaseName; tableName; filterExpressions; limit; offset; } = paginatedScanInput;
+
+        // check if database exists
+        if (not Map.has(databases, thash, databaseName)) {
+            let remark = "database does not exist: " # debug_show(databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
+        };
+
+        ignore do ?{
+            let database = Map.get(databases, thash, databaseName)!;
+
+            // check if table exists
+            if (not Map.has(database.tables, thash, tableName)) {
+                let remark = "table does not exist: " # debug_show(tableName);
+                Debug.print(remark);
+                return #err([ remark ]);
+            };
+
+            let table = Map.get(database.tables, thash, tableName)!;
+            let tableItems = table.items;
+
+            // check if offser is out of bounds
+            if (offset >= Map.size(tableItems)) {
+                return #err([ "offset is greater than the number of items in the table" ]);
+            };
+
+            // check if limit is greater than 0
+            if (limit == 0) {
+                return #err([ "limit should be greater than 0" ]);
+            };
+
+            var itemIdx : Int = -1;
+            var filteredItemCount : Nat = 0;
+            let filteredItemBuffer = Buffer.Buffer<{ id : Text; item: [(Text, Datatypes.AttributeDataValue)] }>(limit);
+            label items for (item in Map.vals(tableItems)) {
+                itemIdx := itemIdx + 1;
+                Debug.print("itemIdx: " # debug_show(itemIdx) # " offset: " # debug_show(offset) # " limit: " # debug_show(limit) # " filteredItemCount: " # debug_show(filteredItemCount) # " item: " # debug_show(item.id));
+                // apply filter expression
+                if (applyFilterExpression({ item; filterExpressions; })) {
+                    filteredItemCount := filteredItemCount + 1;
+                    // check if item is within the offset and limit
+                    if (filteredItemCount > offset) {
+                        if (filteredItemCount <= offset + limit) {
+                            filteredItemBuffer.add({
+                                id = item.id;
+                                item = Map.toArray(item.attributeDataValueMap);
+                            });
+                            if (filteredItemCount == offset + limit) {
+                                break items;
+                            };
+                        } else {
+                            break items;
+                        };
+                    };
+                };
+            };
+
+            return #ok({
+                items = Buffer.toArray(filteredItemBuffer);
+                offset;
+                limit;
+                scannedItemCount = itemIdx + 1;
+                nonScannedItemCount = Map.size(tableItems) - (itemIdx + 1);
+            });
         };
 
         Prelude.unreachable();

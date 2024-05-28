@@ -31,6 +31,15 @@ module {
 
     public type ScanOutputType = Result.Result<[{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }], [ Text ]>;
 
+    public type PaginatedScanOutputType = Result.Result<
+    {
+        items: [{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }];
+        offset: Nat;
+        limit: Nat;
+        scannedItemCount: Int;
+        nonScannedItemCount: Int;
+    }, [ Text ]>;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
 
     public type AddAttributeOutputType = Result.Result<{ databaseName : Text; tableName : Text; attributeName : Text; }, [ Text ]>;
@@ -54,6 +63,7 @@ module {
         #GetTableMetadataOutput : GetTableMetadataOutputType;
         #GetItemByIdOutput : GetItemByIdOutputType;
         #ScanOutput : ScanOutputType;
+        #PaginatedScanOutput : PaginatedScanOutputType;
     };
 
 };

@@ -74,24 +74,23 @@ module {
     public type ScanInputType = InputTypes.ScanInputType;
     public type ScanOutputType = OutputTypes.ScanOutputType;
 
-    public let { scan; } = Search;
-    
+    public type PaginatedScanInputType = InputTypes.PaginatedScanInputType;
+    public type PaginatedScanOutputType = OutputTypes.PaginatedScanOutputType;
+
+    public let { scan; paginatedScan; } = Search;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public type AddAttributeInputType = InputTypes.AddAttributeInputType;
     public type AddAttributeOutputType = OutputTypes.AddAttributeOutputType;
 
-    public let { addAttribute; } = Update;
-
     public type DropAttributeInputType = InputTypes.DropAttributeInputType;
     public type DropAttributeOutputType = OutputTypes.DropAttributeOutputType;
-
-    public let { dropAttribute; } = Update;
 
     public type UpdateItemInputType = InputTypes.UpdateItemInputType;
     public type UpdateItemOutputType = OutputTypes.UpdateItemOutputType;
 
-    public let { updateItem; } = Update;
+    public let { addAttribute; dropAttribute; updateItem; } = Update;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
