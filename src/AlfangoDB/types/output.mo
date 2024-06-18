@@ -25,11 +25,22 @@ module {
         metadata : TableMetadataOutputType;
     };
 
-    public type GetItemByIdOutputType = Result.Result<{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }, [ Text ]>;
+    public type ItemOutputType = { id : Text; item: [ (Text, Datatypes.AttributeDataValue) ]; };
+
+    public type GetItemByIdOutputType = Result.Result<ItemOutputType, [ Text ]>;
+
+    public type BatchGetItemByIdOutputType = Result.Result<{
+        items: [ ItemOutputType ];
+        notFoundIds: [ Text ];
+    }, [ Text ]>;
+
+    public type GetItemCountOutputType = Result.Result<{ count: Int }, [ Text ]>;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public type ScanOutputType = Result.Result<[{ id : Text; item: [ (Text, Datatypes.AttributeDataValue) ] }], [ Text ]>;
+
+    public type ScanAndGetIdsOutputType = Result.Result<{ ids: [ Text ] }, [ Text ]>;
 
     public type PaginatedScanOutputType = Result.Result<
     {
@@ -66,7 +77,10 @@ module {
     public type QueryOpsOutputType = {
         #GetTableMetadataOutput : GetTableMetadataOutputType;
         #GetItemByIdOutput : GetItemByIdOutputType;
+        #BatchGetItemByIdOutput : BatchGetItemByIdOutputType;
+        #GetItemCountOutput : GetItemCountOutputType;
         #ScanOutput : ScanOutputType;
+        #ScanAndGetIdsOutput : ScanAndGetIdsOutputType;
         #PaginatedScanOutput : PaginatedScanOutputType;
         #GetDatabasesOutput : GetDatabasesOutputType;
     };

@@ -7,6 +7,7 @@ import Debug "mo:base/Debug";
 import Prelude "mo:base/Prelude";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
+import Buffer "mo:base/Buffer";
 
 module {
 
@@ -92,6 +93,94 @@ module {
         Prelude.unreachable();
     };
 
+
+    public func batchGetItemById({
+        batchGetItemByIdInput: InputTypes.BatchGetItemByIdInputType;
+        alfangoDB: Database.AlfangoDB;
+    }) : OutputTypes.BatchGetItemByIdOutputType {
+
+        // get databases
+        let databases = alfangoDB.databases;
+
+        // check if database exists
+        if (not Map.has(databases, thash, batchGetItemByIdInput.databaseName)) {
+            let remark = "database does not exist: " # debug_show(batchGetItemByIdInput.databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
+        };
+
+        ignore do ?{
+            let database = Map.get(databases, thash, batchGetItemByIdInput.databaseName)!;
+
+            // check if table exists
+            if (not Map.has(database.tables, thash, batchGetItemByIdInput.tableName)) {
+                let remark = "table does not exist: " # debug_show(batchGetItemByIdInput.tableName); 
+                Debug.print(remark);
+                return #err([ remark ]);
+            };
+
+            let table = Map.get(database.tables, thash, batchGetItemByIdInput.tableName)!;
+
+            let notFoundIdsBuffer = Buffer.Buffer<Text>(0);
+            let items = Buffer.Buffer<OutputTypes.ItemOutputType>(0);
+            for (id in batchGetItemByIdInput.ids.vals()) {
+                // check if item exists
+                if (not Map.has(table.items, thash, id)) {
+                    let remark = "item does not exist" # debug_show(id);
+                    Debug.print(remark);
+                    notFoundIdsBuffer.add(id);
+                };
+                let item = Map.get(table.items, thash, id)!;
+                items.add({
+                    id = id;
+                    item = Map.toArray(item.attributeDataValueMap);
+                });
+            };
+
+            return #ok({
+                items = Buffer.toArray(items);
+                notFoundIds = Buffer.toArray(notFoundIdsBuffer);
+            });
+        };
+
+        Prelude.unreachable();
+    };
+
+    public func getItemCount({
+        getItemCountInput: InputTypes.GetItemCountInputType;
+        alfangoDB: Database.AlfangoDB;
+    }) : OutputTypes.GetItemCountOutputType {
+
+        // get databases
+        let databases = alfangoDB.databases;
+
+        // check if database exists
+        if (not Map.has(databases, thash, getItemCountInput.databaseName)) {
+            let remark = "database does not exist: " # debug_show(getItemCountInput.databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
+        };
+
+        ignore do ?{
+            let database = Map.get(databases, thash, getItemCountInput.databaseName)!;
+
+            // check if table exists
+            if (not Map.has(database.tables, thash, getItemCountInput.tableName)) {
+                let remark = "table does not exist: " # debug_show(getItemCountInput.tableName); 
+                Debug.print(remark);
+                return #err([ remark ]);
+            };
+
+            let table = Map.get(database.tables, thash, getItemCountInput.tableName)!;
+
+            return #ok({
+                count = Map.size(table.items);
+            });
+        };
+
+        Prelude.unreachable();
+    };
+
     public func getDatabaseNames(
         alfangoDB: Database.AlfangoDB
     ) : OutputTypes.GetDatabasesOutputType {
@@ -135,6 +224,5 @@ module {
         };
         
         return databaseNames;
-    }
-
+    };
 };

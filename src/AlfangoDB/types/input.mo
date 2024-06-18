@@ -36,6 +36,17 @@ module {
         id: Text;
     };
 
+    public type BatchGetItemByIdInputType = {
+        databaseName: Text;
+        tableName: Text;
+        ids: [ Text ];
+    };
+
+    public type GetItemCountInputType = {
+        databaseName: Text;
+        tableName: Text;
+    };
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public type ScanInputType = {
@@ -43,6 +54,8 @@ module {
         tableName: Text;
         filterExpressions: [ SearchTypes.FilterExpressionType ];
     };
+
+    public type ScanAndGetIdsInputType = ScanInputType;
 
     public type PaginatedScanInputType = {
         databaseName: Text;
@@ -91,7 +104,10 @@ module {
     public type QueryOpsInputType = {
         #GetTableMetadataInput : GetTableMetadataInputType;
         #GetItemByIdInput : GetItemByIdInputType;
+        #BatchGetItemByIdInput : BatchGetItemByIdInputType;
+        #GetItemCountInput : GetItemCountInputType;
         #ScanInput : ScanInputType;
+        #ScanAndGetIdsInput : ScanAndGetIdsInputType;
         #PaginatedScanInput : PaginatedScanInputType;
         #GetDatabasesInput : GetDatabasesInputType;
     };
