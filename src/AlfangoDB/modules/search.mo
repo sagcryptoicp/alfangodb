@@ -54,15 +54,61 @@ module {
                 applyFilterExpression({ item; filterExpressions; });
             });
 
-            let filteredItemBuffer = Buffer.Buffer<{ id : Text; item: [(Text, Datatypes.AttributeDataValue)] }>(filteredItemMap.size());
+            let filteredItemsBuffer = Buffer.Buffer<{ id : Text; item: [(Text, Datatypes.AttributeDataValue)] }>(filteredItemMap.size());
             for (filteredItem in Map.vals(filteredItemMap)) {
-                filteredItemBuffer.add({
+                filteredItemsBuffer.add({
                     id = filteredItem.id;
                     item = Map.toArray(filteredItem.attributeDataValueMap);
                 });
             };
 
-            return #ok(Buffer.toArray(filteredItemBuffer));
+            return #ok(Buffer.toArray(filteredItemsBuffer));
+        };
+
+        Prelude.unreachable();
+    };
+
+    public func scanAndGetIds({
+        scanAndGetIdsInput : InputTypes.ScanAndGetIdsInputType;
+        alfangoDB : Database.AlfangoDB;
+    }) : OutputTypes.ScanAndGetIdsOutputType {
+
+        // get databases
+        let databases = alfangoDB.databases;
+
+        let { databaseName; tableName; filterExpressions; } = scanAndGetIdsInput;
+
+        // check if database exists
+        if (not Map.has(databases, thash, databaseName)) {
+            let remark = "database does not exist: " # debug_show(databaseName);
+            Debug.print(remark);
+            return #err([ remark ]);
+        };
+
+        ignore do ?{
+            let database = Map.get(databases, thash, databaseName)!;
+
+            // check if table exists
+            if (not Map.has(database.tables, thash, tableName)) {
+                let remark = "table does not exist: " # debug_show(tableName);
+                Debug.print(remark);
+                return #err([ remark ]);
+            };
+
+            let table = Map.get(database.tables, thash, tableName)!;
+            let tableItems = table.items;
+
+            let filteredItemIdsBuffer = Buffer.Buffer<Text>(0);
+            for (item in Map.vals(tableItems)) {
+                // apply filter expression
+                if (applyFilterExpression({ item; filterExpressions; })) {
+                    filteredItemIdsBuffer.add(item.id)
+                };
+            };
+
+            return #ok({
+                ids = Buffer.toArray(filteredItemIdsBuffer);
+            });
         };
 
         Prelude.unreachable();

@@ -42,7 +42,6 @@ module {
     public type Table = Database.Table;
     public type Database = Database.Database;
 
-    public type fun = () -> ();
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public type AlfangoDB = Database.AlfangoDB;
@@ -53,6 +52,9 @@ module {
     public type CreateDatabaseInputType = InputTypes.CreateDatabaseInputType;
     public type CreateTableInputType = InputTypes.CreateTableInputType;
     public type CreateItemInputType = InputTypes.CreateItemInputType;
+
+    public type CreateDatabaseOutputType = OutputTypes.CreateDatabaseOutputType;
+    public type CreateTableOutputType = OutputTypes.CreateTableOutputType;
     public type CreateItemOutputType = OutputTypes.CreateItemOutputType;
 
     public let { createDatabase; createTable; createItem; } = Create;
@@ -61,10 +63,15 @@ module {
 
     public type GetTableMetadataInputType = InputTypes.GetTableMetadataInputType;
     public type GetItemByIdInputType = InputTypes.GetItemByIdInputType;
+    public type BatchGetItemByIdInputType = InputTypes.BatchGetItemByIdInputType;
+    public type GetItemCountInputType = InputTypes.GetItemCountInputType;
+
     public type GetTableMetadataOutputType = OutputTypes.GetTableMetadataOutputType;
     public type GetItemByIdOutputType = OutputTypes.GetItemByIdOutputType;
+    public type BatchGetItemByIdOutputType = OutputTypes.BatchGetItemByIdOutputType;
+    public type GetItemCountOutputType = OutputTypes.GetItemCountOutputType;
 
-    public let { getTableMetadata; getItemById; } = Read;
+    public let { getTableMetadata; getItemById; batchGetItemById; getItemCount; } = Read;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,22 +79,23 @@ module {
     public type FilterExpressionConditionType = SearchTypes.FilterExpressionConditionType;
 
     public type ScanInputType = InputTypes.ScanInputType;
-    public type ScanOutputType = OutputTypes.ScanOutputType;
-
+    public type ScanAndGetIdsInputType = InputTypes.ScanAndGetIdsInputType;
     public type PaginatedScanInputType = InputTypes.PaginatedScanInputType;
+
+    public type ScanOutputType = OutputTypes.ScanOutputType;
+    public type ScanAndGetIdsOutputType = OutputTypes.ScanAndGetIdsOutputType;
     public type PaginatedScanOutputType = OutputTypes.PaginatedScanOutputType;
 
-    public let { scan; paginatedScan; } = Search;
+    public let { scan; scanAndGetIds; paginatedScan; } = Search;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public type AddAttributeInputType = InputTypes.AddAttributeInputType;
-    public type AddAttributeOutputType = OutputTypes.AddAttributeOutputType;
-
     public type DropAttributeInputType = InputTypes.DropAttributeInputType;
-    public type DropAttributeOutputType = OutputTypes.DropAttributeOutputType;
-
     public type UpdateItemInputType = InputTypes.UpdateItemInputType;
+
+    public type AddAttributeOutputType = OutputTypes.AddAttributeOutputType;
+    public type DropAttributeOutputType = OutputTypes.DropAttributeOutputType;
     public type UpdateItemOutputType = OutputTypes.UpdateItemOutputType;
 
     public let { addAttribute; dropAttribute; updateItem; } = Update;
@@ -100,10 +108,12 @@ module {
 
     public type UpdateOpsInputType = InputTypes.UpdateOpsInputType;
     public type QueryOpsInputType = InputTypes.QueryOpsInputType;
+
     public type UpdateOpsOutputType = OutputTypes.UpdateOpsOutputType;
     public type QueryOpsOutputType = OutputTypes.QueryOpsOutputType;
 
     public let { updateOperation; queryOperation; } = Service;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 };

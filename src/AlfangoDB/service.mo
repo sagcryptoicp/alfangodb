@@ -48,8 +48,17 @@ module {
             case (#GetItemByIdInput(getItemByIdInput)) {
                 return #GetItemByIdOutput(Read.getItemById({ getItemByIdInput; alfangoDB; }));
             };
+            case (#BatchGetItemByIdInput(batchGetItemByIdInput)) {
+                return #BatchGetItemByIdOutput(Read.batchGetItemById({ batchGetItemByIdInput; alfangoDB; }));
+            };
+            case (#GetItemCountInput(getItemCountInput)) {
+                return #GetItemCountOutput(Read.getItemCount({ getItemCountInput; alfangoDB; }));
+            };
             case (#ScanInput(scanInput)) {
                 return #ScanOutput(Search.scan({ scanInput; alfangoDB; }));
+            };
+            case (#ScanAndGetIdsInput(scanAndGetIdsInput)) {
+                return #ScanAndGetIdsOutput(Search.scanAndGetIds({ scanAndGetIdsInput; alfangoDB; }));
             };
             case (#PaginatedScanInput(paginatedScanInput)) {
                 return #PaginatedScanOutput(Search.paginatedScan({ paginatedScanInput; alfangoDB; }));
