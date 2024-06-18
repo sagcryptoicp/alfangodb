@@ -50,6 +50,10 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type GetDatabasesOutputType = [Database.DatabaseName];
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public type UpdateOpsOutputType = {
         #CreateDatabaseOutput : CreateDatabaseOutputType;
         #CreateTableOutput : CreateTableOutputType;
@@ -64,6 +68,7 @@ module {
         #GetItemByIdOutput : GetItemByIdOutputType;
         #ScanOutput : ScanOutputType;
         #PaginatedScanOutput : PaginatedScanOutputType;
+        #GetDatabasesOutput : GetDatabasesOutputType;
     };
 
 };

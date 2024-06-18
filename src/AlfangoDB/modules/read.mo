@@ -6,6 +6,7 @@ import { thash } "mo:map/Map";
 import Debug "mo:base/Debug";
 import Prelude "mo:base/Prelude";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
 
 module {
 
@@ -90,5 +91,50 @@ module {
 
         Prelude.unreachable();
     };
+
+    public func getDatabaseNames(
+        alfangoDB: Database.AlfangoDB
+    ) : OutputTypes.GetDatabasesOutputType {
+
+        // create an empty array
+        var databaseNames : [Database.DatabaseName] = [];
+
+        // crete an Iterator
+        let databaseArgsIter = Iter.range(0, alfangoDB.databases.size() - 1);
+
+        // iterate over the databases
+        for (i in databaseArgsIter) {
+            let databaseInfo = alfangoDB.databases.get(i);
+
+            // check if the database Map is null
+            switch(databaseInfo) {
+                case (null) { };
+                case (?value) {
+
+                    // get the databases name array
+                    let databases = value.0;
+
+                    // create an Iterator
+                    let dbIter = Iter.range(0, databases.size() - 1);
+
+                    // iterate over the databases name array
+                    for (j in dbIter) {
+
+                        // check if the database name is null
+                        let dbValue = databases.get(j);
+                        switch(dbValue){
+                            case (null) {/* TO-DO : Handle null case */ };
+                            case (?value) {
+                                // append the database name to the array
+                                databaseNames := Array.append(databaseNames, [value]);  
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        
+        return databaseNames;
+    }
 
 };

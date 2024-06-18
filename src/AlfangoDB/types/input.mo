@@ -75,6 +75,10 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type GetDatabasesInputType = {};
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public type UpdateOpsInputType = {
         #CreateDatabaseInput : CreateDatabaseInputType;
         #CreateTableInput : CreateTableInputType;
@@ -89,6 +93,7 @@ module {
         #GetItemByIdInput : GetItemByIdInputType;
         #ScanInput : ScanInputType;
         #PaginatedScanInput : PaginatedScanInputType;
+        #GetDatabasesInput : GetDatabasesInputType;
     };
 
 };
