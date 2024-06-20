@@ -8,6 +8,7 @@ import Prelude "mo:base/Prelude";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
+import Output "../types/output";
 
 module {
 
@@ -181,12 +182,17 @@ module {
         Prelude.unreachable();
     };
 
-    public func getDatabaseNames(
+    public func getDatabaseInfo(
         alfangoDB: Database.AlfangoDB
     ) : OutputTypes.GetDatabasesOutputType {
 
         // create an empty array
-        var databaseNames : [Database.DatabaseName] = [];
+        var databasesInfo : [
+            {
+                name: Text;
+                tables: [Text];
+            }
+        ] = [];
 
         // crete an Iterator
         let databaseArgsIter = Iter.range(0, alfangoDB.databases.size() - 1);
@@ -200,22 +206,58 @@ module {
                 case (null) { };
                 case (?value) {
 
-                    // get the databases name array
-                    let databases = value.0;
+                    // get the databases array
+                    let databases = value.1;
 
                     // create an Iterator
                     let dbIter = Iter.range(0, databases.size() - 1);
 
-                    // iterate over the databases name array
+                    // iterate over the databases array
                     for (j in dbIter) {
 
-                        // check if the database name is null
+                        // check if the database is null
                         let dbValue = databases.get(j);
                         switch(dbValue){
                             case (null) {/* TO-DO : Handle null case */ };
                             case (?value) {
-                                // append the database name to the array
-                                databaseNames := Array.append(databaseNames, [value]);  
+
+                                // get the tables array
+                                let tables = value.tables;
+                                let tbIter = Iter.range(0, tables.size()-1); 
+
+                                // create an empty array
+                                var tableNames : [Text] = [];
+
+                                // iterate over the tables
+                                for(k in tbIter){
+                                    let tbValue = tables.get(k);
+                                    switch(tbValue){
+                                        case (null) {/* TO-DO : Handle null case */ };
+                                        case (?value) {
+                                            // get the tables name array
+                                            let tables = value.0;
+                                            let tbnameIter = Iter.range(0, tables.size()-1);
+
+                                            // iterate over tables name array
+                                            for(l in tbnameIter){
+                                                let tbnameValue = tables.get(l);
+                                                switch(tbnameValue){
+                                                    case (null) {/* TO-DO : Handle null case */ };
+                                                    case (?value) { 
+                                                        // append the table name to the array
+                                                        tableNames := Array.append(tableNames, [value]);
+                                                    };
+                                                };
+                                            };
+                                        };
+                                    }
+                                };
+
+                                // append the database name and it's tables to the array
+                                databasesInfo := Array.append(databasesInfo, [{
+                                    name = value.name;
+                                    tables = tableNames;
+                                }]);
                             };
                         };
                     };
@@ -223,6 +265,8 @@ module {
             };
         };
         
-        return databaseNames;
+        return {
+            databases = databasesInfo;
+        };
     };
 };

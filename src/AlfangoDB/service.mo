@@ -64,7 +64,7 @@ module {
                 return #PaginatedScanOutput(Search.paginatedScan({ paginatedScanInput; alfangoDB; }));
             };
             case (#GetDatabasesInput(getDatabasesInput)){
-                return #GetDatabasesOutput(Read.getDatabaseNames(alfangoDB));
+                return #GetDatabasesOutput(Read.getDatabaseInfo(alfangoDB));
             };
         }
     }
