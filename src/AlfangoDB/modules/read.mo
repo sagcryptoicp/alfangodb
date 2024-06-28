@@ -186,87 +186,70 @@ module {
         alfangoDB: Database.AlfangoDB
     ) : OutputTypes.GetDatabasesOutputType {
 
-        // create an empty array
-        var databasesInfo : [
-            {
-                name: Text;
-                tables: [Text];
-            }
-        ] = [];
+        // create a buffer for databasesInfo
+        let databasesInfo = Buffer.Buffer<{
+            name: Text;
+            tables: [Text];
+        }>(0);
 
-        // crete an Iterator
+        // create an Iterator
         let databaseArgsIter = Iter.range(0, alfangoDB.databases.size() - 1);
 
         // iterate over the databases
         for (i in databaseArgsIter) {
-            let databaseInfo = alfangoDB.databases.get(i);
+            ignore do ?{
+                let databaseInfo = alfangoDB.databases.get(i)!;
 
-            // check if the database Map is null
-            switch(databaseInfo) {
-                case (null) { };
-                case (?value) {
+                // get the databases array
+                let databases = databaseInfo.1;
 
-                    // get the databases array
-                    let databases = value.1;
+                // create an Iterator
+                let dbIter = Iter.range(0, databases.size() - 1);
 
-                    // create an Iterator
-                    let dbIter = Iter.range(0, databases.size() - 1);
+                // iterate over the databases array
+                for (j in dbIter) {
+                    ignore do ?{
+                        let dbValue = databases.get(j)!;
 
-                    // iterate over the databases array
-                    for (j in dbIter) {
+                        // get the tables array
+                        let tables = dbValue.tables;
+                        let tbIter = Iter.range(0, tables.size() - 1);
 
-                        // check if the database is null
-                        let dbValue = databases.get(j);
-                        switch(dbValue){
-                            case (null) {/* TO-DO : Handle null case */ };
-                            case (?value) {
+                        // create a buffer for table names
+                        let tableNames = Buffer.Buffer<Text>(0);
 
-                                // get the tables array
-                                let tables = value.tables;
-                                let tbIter = Iter.range(0, tables.size()-1); 
+                        // iterate over the tables
+                        for (k in tbIter) {
+                            ignore do ?{
+                                let tbValue = tables.get(k)!;
 
-                                // create an empty array
-                                var tableNames : [Text] = [];
+                                // get the table names array
+                                let tableNamesArray = tbValue.0;
+                                let tbnameIter = Iter.range(0, tableNamesArray.size() - 1);
 
-                                // iterate over the tables
-                                for(k in tbIter){
-                                    let tbValue = tables.get(k);
-                                    switch(tbValue){
-                                        case (null) {/* TO-DO : Handle null case */ };
-                                        case (?value) {
-                                            // get the tables name array
-                                            let tables = value.0;
-                                            let tbnameIter = Iter.range(0, tables.size()-1);
-
-                                            // iterate over tables name array
-                                            for(l in tbnameIter){
-                                                let tbnameValue = tables.get(l);
-                                                switch(tbnameValue){
-                                                    case (null) {/* TO-DO : Handle null case */ };
-                                                    case (?value) { 
-                                                        // append the table name to the array
-                                                        tableNames := Array.append(tableNames, [value]);
-                                                    };
-                                                };
-                                            };
-                                        };
-                                    }
+                                // iterate over table names array
+                                for (l in tbnameIter) {
+                                    ignore do ?{
+                                        let tbnameValue = tableNamesArray.get(l)!;
+                                        // append the table name to the buffer
+                                        tableNames.add(tbnameValue);
+                                    };
                                 };
-
-                                // append the database name and it's tables to the array
-                                databasesInfo := Array.append(databasesInfo, [{
-                                    name = value.name;
-                                    tables = tableNames;
-                                }]);
                             };
                         };
+
+                        // append the database name and its tables to the buffer
+                        databasesInfo.add({
+                            name = dbValue.name;
+                            tables = Buffer.toArray(tableNames);
+                        });
                     };
                 };
             };
         };
-        
+
         return {
-            databases = databasesInfo;
+            databases = Buffer.toArray(databasesInfo);
         };
     };
 };
