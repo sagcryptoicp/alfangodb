@@ -6,9 +6,7 @@ import { thash } "mo:map/Map";
 import Debug "mo:base/Debug";
 import Prelude "mo:base/Prelude";
 import Iter "mo:base/Iter";
-import Array "mo:base/Array";
 import Buffer "mo:base/Buffer";
-import Output "../types/output";
 
 module {
 
