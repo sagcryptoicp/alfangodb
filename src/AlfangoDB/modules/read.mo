@@ -180,74 +180,29 @@ module {
         Prelude.unreachable();
     };
 
-    public func getDatabaseInfo(
-        alfangoDB: Database.AlfangoDB
-    ) : OutputTypes.GetDatabasesOutputType {
-
-        // create a buffer for databasesInfo
-        let databasesInfo = Buffer.Buffer<{
-            name: Text;
-            tables: [Text];
-        }>(0);
-
-        // create an Iterator
-        let databaseArgsIter = Iter.range(0, alfangoDB.databases.size() - 1);
-
-        // iterate over the databases
-        for (i in databaseArgsIter) {
-            ignore do ?{
-                let databaseInfo = alfangoDB.databases.get(i)!;
-
-                // get the databases array
-                let databases = databaseInfo.1;
-
-                // create an Iterator
-                let dbIter = Iter.range(0, databases.size() - 1);
-
-                // iterate over the databases array
-                for (j in dbIter) {
-                    ignore do ?{
-                        let dbValue = databases.get(j)!;
-
-                        // get the tables array
-                        let tables = dbValue.tables;
-                        let tbIter = Iter.range(0, tables.size() - 1);
-
-                        // create a buffer for table names
-                        let tableNames = Buffer.Buffer<Text>(0);
-
-                        // iterate over the tables
-                        for (k in tbIter) {
-                            ignore do ?{
-                                let tbValue = tables.get(k)!;
-
-                                // get the table names array
-                                let tableNamesArray = tbValue.0;
-                                let tbnameIter = Iter.range(0, tableNamesArray.size() - 1);
-
-                                // iterate over table names array
-                                for (l in tbnameIter) {
-                                    ignore do ?{
-                                        let tbnameValue = tableNamesArray.get(l)!;
-                                        // append the table name to the buffer
-                                        tableNames.add(tbnameValue);
-                                    };
-                                };
-                            };
-                        };
-
-                        // append the database name and its tables to the buffer
-                        databasesInfo.add({
-                            name = dbValue.name;
-                            tables = Buffer.toArray(tableNames);
-                        });
-                    };
-                };
+    public func getDatabaseInfo(alfangoDB: Database.AlfangoDB) : OutputTypes.GetDatabasesOutputType {
+        let databasesInfo = Buffer.Buffer<{ name: Text; tables: [Text]; }>(0);
+        
+        // Iterate over all databases
+        for ((dbName, database) in Map.entries(alfangoDB.databases)) {
+            let tableNames = Buffer.Buffer<Text>(0);
+            
+            // Iterate over all tables in the current database
+            for ((tableName, table) in Map.entries(database.tables)) {
+                tableNames.add(tableName);
             };
+
+             // Add the database info (name and tables) to the main buffer
+            databasesInfo.add({
+                name = dbName;
+                tables = Buffer.toArray(tableNames);
+            });
         };
 
         return {
             databases = Buffer.toArray(databasesInfo);
         };
+
+        Prelude.unreachable();
     };
 };
