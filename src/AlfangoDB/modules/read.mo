@@ -180,7 +180,7 @@ module {
         Prelude.unreachable();
     };
 
-    public func getDatabaseInfo(alfangoDB: Database.AlfangoDB) : OutputTypes.GetDatabasesOutputType {
+    public func getDatabases(alfangoDB: Database.AlfangoDB) : OutputTypes.GetDatabasesOutputType {
         let databasesInfo = Buffer.Buffer<{ name: Text; tables: [Text]; }>(0);
         
         // Iterate over all databases
