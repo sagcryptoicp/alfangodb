@@ -4,12 +4,15 @@ module {
 
     type NumericAttributeDataValue = Datatypes.NumericAttributeDataValue;
     type StringAttributeDataValue = Datatypes.StringAttributeDataValue;
+    type ListAttributeDataValue = Datatypes.ListAttributeDataValue;
 
     public type RelationalExpressionAttributeDataValue = NumericAttributeDataValue or StringAttributeDataValue or {
         #bool : Bool;
         #blob : Blob;
         #principal : Principal;
     };
+
+    public type ContaintmentExpressionAttributeDataValue = StringAttributeDataValue or ListAttributeDataValue;
 
     public type FilterExpressionConditionType = {
         #EQ: RelationalExpressionAttributeDataValue;
@@ -19,8 +22,8 @@ module {
         #GT: RelationalExpressionAttributeDataValue;
         #GTE: RelationalExpressionAttributeDataValue;
         #BEGINS_WITH: StringAttributeDataValue;
-        #CONTAINS: StringAttributeDataValue;
-        #NOT_CONTAINS: StringAttributeDataValue;
+        #CONTAINS: ContaintmentExpressionAttributeDataValue;
+        #NOT_CONTAINS: ContaintmentExpressionAttributeDataValue;
         #NOT_EXISTS;
         #EXISTS;
         #IN: [ RelationalExpressionAttributeDataValue ];

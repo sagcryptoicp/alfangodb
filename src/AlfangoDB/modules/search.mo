@@ -19,6 +19,7 @@ module {
     type RelationalExpressionAttributeDataValue = SearchTypes.RelationalExpressionAttributeDataValue;
     type FilterExpressionConditionType = SearchTypes.FilterExpressionConditionType;
     type FilterExpressionType = SearchTypes.FilterExpressionType;
+    type ContaintmentExpressionAttributeDataValue = SearchTypes.ContaintmentExpressionAttributeDataValue;
 
     public func scan({
         scanInput : InputTypes.ScanInputType;
@@ -289,97 +290,97 @@ module {
             case (#int(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#int8(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int8(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#int16(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int16(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#int32(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int32(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#int64(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int64(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#nat(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#nat8(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat8(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#nat16(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat16(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#nat32(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat32(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#nat64(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat64(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#float(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#float(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#text(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#text(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#char(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#char(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#bool(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#bool(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#blob(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#blob(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
             case (#principal(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#principal(attributeDataValue)) areEqual := inputDataValue == attributeDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) areEqual := false;
                 };
             };
         };
@@ -397,97 +398,97 @@ module {
             case (#int(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#int8(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int8(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#int16(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int16(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#int32(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int32(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#int64(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int64(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#nat(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#nat8(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat8(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#nat16(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat16(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#nat32(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat32(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#nat64(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat64(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#float(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#float(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#text(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#text(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#char(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#char(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#bool(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#bool(attributeDataValue)) isLessThan := false;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#blob(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#blob(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
             case (#principal(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#principal(attributeDataValue)) isLessThan := attributeDataValue < inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThan := false;
                 };
             };
         };
@@ -505,97 +506,97 @@ module {
             case (#int(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#int8(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int8(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#int16(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int16(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#int32(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int32(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#int64(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#int64(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#nat(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#nat8(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat8(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#nat16(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat16(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#nat32(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat32(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#nat64(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#nat64(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#float(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#float(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#text(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#text(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#char(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#char(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#bool(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#bool(attributeDataValue)) isLessThanOrEqual := attributeDataValue == inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#blob(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#blob(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
             case (#principal(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#principal(attributeDataValue)) isLessThanOrEqual := attributeDataValue <= inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isLessThanOrEqual := false;
                 };
             };
         };
@@ -613,13 +614,13 @@ module {
             case (#text(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#text(attributeDataValue)) beginsWith := Text.startsWith(attributeDataValue, #text inputDataValue);
-                    case (_) Prelude.unreachable();
+                    case (_) beginsWith := false;
                 };
             };
             case (#char(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#char(attributeDataValue)) beginsWith := attributeDataValue == inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) beginsWith := false;
                 };
             };
         };
@@ -629,7 +630,7 @@ module {
 
     private func applyFilterCONTAINS({
         attributeDataValue: AttributeDataValue;
-        conditionAttributeDataValue: StringAttributeDataValue;
+        conditionAttributeDataValue: ContaintmentExpressionAttributeDataValue;
     }) : Bool {
 
         var contains = false;
@@ -637,14 +638,26 @@ module {
             case (#text(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#text(attributeDataValue)) contains := Text.contains(attributeDataValue, #text inputDataValue);
-                    case (_) Prelude.unreachable();
+                    case (_) contains := false;
                 };
             };
             case (#char(inputDataValue)) {
                 switch (attributeDataValue) {
                     case (#char(attributeDataValue)) contains := attributeDataValue == inputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) contains := false;
                 };
+            };
+            case (#list(inputDataValueList)){
+                switch (attributeDataValue) {
+                    case (#list(attributeDataValueList)) {
+                        return Array.foldLeft<RelationalExpressionAttributeDataValue, Bool>(
+                            inputDataValueList,
+                            true,
+                            func(soFarContains, inputDataValue) = soFarContains and applyFilterIN({ attributeDataValue = inputDataValue; conditionAttributeDataValue = attributeDataValueList; })
+                        );
+                    };
+                    case (_) contains := false;
+                }
             };
         };
 
@@ -671,79 +684,79 @@ module {
             case ((#int(lowerInputDataValue), #int(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#int(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#int8(lowerInputDataValue), #int8(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#int8(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#int16(lowerInputDataValue), #int16(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#int16(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#int32(lowerInputDataValue), #int32(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#int32(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#int64(lowerInputDataValue), #int64(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#int64(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#nat(lowerInputDataValue), #nat(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#nat(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#nat8(lowerInputDataValue), #nat8(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#nat8(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#nat16(lowerInputDataValue), #nat16(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#nat16(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#nat32(lowerInputDataValue), #nat32(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#nat32(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#nat64(lowerInputDataValue), #nat64(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#nat64(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#float(lowerInputDataValue), #float(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#float(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#text(lowerInputDataValue), #text(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#text(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case ((#char(lowerInputDataValue), #char(upperInputDataValue))) {
                 switch (attributeDataValue) {
                     case (#char(attributeDataValue)) isBetween := lowerInputDataValue <= attributeDataValue and attributeDataValue <= upperInputDataValue;
-                    case (_) Prelude.unreachable();
+                    case (_) isBetween := false;
                 };
             };
             case _ {
