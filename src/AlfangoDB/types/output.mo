@@ -61,6 +61,15 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type GetDatabasesOutputType = {
+        databases : [{
+            name : Text;
+            tables : [ Text ];
+        }];
+    };
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public type UpdateOpsOutputType = {
         #CreateDatabaseOutput : CreateDatabaseOutputType;
         #CreateTableOutput : CreateTableOutputType;
@@ -78,6 +87,7 @@ module {
         #ScanOutput : ScanOutputType;
         #ScanAndGetIdsOutput : ScanAndGetIdsOutputType;
         #PaginatedScanOutput : PaginatedScanOutputType;
+        #GetDatabasesOutput : GetDatabasesOutputType;
     };
 
 };

@@ -92,6 +92,7 @@ module {
         Prelude.unreachable();
     };
 
+
     public func batchGetItemById({
         batchGetItemByIdInput: InputTypes.BatchGetItemByIdInputType;
         alfangoDB: Database.AlfangoDB;
@@ -179,4 +180,29 @@ module {
         Prelude.unreachable();
     };
 
+    public func getDatabases(alfangoDB: Database.AlfangoDB) : OutputTypes.GetDatabasesOutputType {
+        let databasesInfo = Buffer.Buffer<{ name: Text; tables: [Text]; }>(0);
+        
+        // Iterate over all databases
+        for ((dbName, database) in Map.entries(alfangoDB.databases)) {
+            let tableNames = Buffer.Buffer<Text>(0);
+            
+            // Iterate over all tables in the current database
+            for ((tableName, table) in Map.entries(database.tables)) {
+                tableNames.add(tableName);
+            };
+
+             // Add the database info (name and tables) to the main buffer
+            databasesInfo.add({
+                name = dbName;
+                tables = Buffer.toArray(tableNames);
+            });
+        };
+
+        return {
+            databases = Buffer.toArray(databasesInfo);
+        };
+
+        Prelude.unreachable();
+    };
 };

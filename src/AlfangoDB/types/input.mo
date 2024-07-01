@@ -88,6 +88,10 @@ module {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public type GetDatabasesInputType = {};
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public type UpdateOpsInputType = {
         #CreateDatabaseInput : CreateDatabaseInputType;
         #CreateTableInput : CreateTableInputType;
@@ -105,6 +109,7 @@ module {
         #ScanInput : ScanInputType;
         #ScanAndGetIdsInput : ScanAndGetIdsInputType;
         #PaginatedScanInput : PaginatedScanInputType;
+        #GetDatabasesInput : GetDatabasesInputType;
     };
 
 };
